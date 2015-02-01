@@ -1,5 +1,5 @@
-[![Stories in Ready](https://badge.waffle.io/agilarity/testng-osmo.png?label=ready&title=Ready)](https://waffle.io/agilarity/testng-osmo)
-[![Build Status](https://travis-ci.org/agilarity/testng-osmo.svg?branch=master)](https://travis-ci.org/agilarity/testng-osmo)
+[![Stories in Ready](https://badge.waffle.io/agilarity/osmo-sugar.png?label=ready&title=Ready)](https://waffle.io/agilarity/osmo-sugar)
+[![Build Status](https://travis-ci.org/agilarity/osmo-sugar.svg?branch=master)](https://travis-ci.org/agilarity/osmo-sugar)
 
 This project provides support for model based testing with Teemu Kanstren's [OSMO Tester](https://code.google.com/p/osmo/).
 
