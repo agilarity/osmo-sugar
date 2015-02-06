@@ -13,7 +13,7 @@ This project provides support for model based testing with Teemu Kanstren's [OSM
 <dependency>
     <groupId>com.agilarity</groupId>
     <artifactId>osmo-sugar</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 </dependency>
 ```
 2. Add the runner to your test method.
