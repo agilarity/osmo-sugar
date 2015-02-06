@@ -53,9 +53,9 @@ public abstract class Feature<D, S> { // NOPMD
 	/**
 	 * @param requirements
 	 *            The requirements
-	 * @param D
+	 * @param driver
 	 *            Test driver is the facade to the system under test
-	 * @param S
+	 * @param state
 	 *            Test state is used to track the state of the system under test
 	 */
 	public Feature(final Requirements requirements, final D driver,
