@@ -37,8 +37,7 @@ public class OsmoTestRunner {
 	private final transient OSMOTester tester;
 
 	/**
-	 * @param configuration
-	 *            Test configuration
+	 * @param configuration Test configuration
 	 */
 	public OsmoTestRunner(final OSMOConfiguration configuration) {
 		super();
@@ -57,8 +56,7 @@ public class OsmoTestRunner {
 	/**
 	 * Generate the tests and assure every requirement is covered.
 	 *
-	 * @param seed
-	 *            Value used to randomize test steps
+	 * @param seed Value used to randomize test steps
 	 */
 	public void generateTest(final int seed) {
 		tester.generate(seed);
@@ -69,11 +67,9 @@ public class OsmoTestRunner {
 		final Requirements requirements = tester.getSuite().getRequirements();
 
 		if (requirements != null) {
-			final Collection<String> missingCoverage = requirements
-					.getMissingCoverage();
+			final Collection<String> missingCoverage = requirements.getMissingCoverage();
 			if (!missingCoverage.isEmpty()) {
-				throw new OsmoTestException("Not covered "
-						+ missingCoverage.toString());
+				throw new OsmoTestException("Not covered " + missingCoverage.toString());
 			}
 		}
 	}

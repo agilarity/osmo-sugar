@@ -28,8 +28,7 @@ import osmo.tester.model.Requirements;
 
 import com.agilarity.osmo.feature.Feature;
 
-public abstract class AbstractTestFeature extends
-		Feature<TestDriver, TestStatus> {
+public abstract class AbstractTestFeature extends Feature<TestDriver, TestStatus> {
 
 	public AbstractTestFeature() {
 		this(new Requirements());

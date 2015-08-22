@@ -33,16 +33,14 @@ import com.agilarity.osmo.feature.models.AbstractTestFeature;
 
 public class NameRequirementTest {
 
-	@Test
-	public void shouldPreferAnnotationName() {
+	@Test public void shouldPreferAnnotationName() {
 		final FeatureWithAnnotationName feature = new FeatureWithAnnotationName();
 		assertThat(feature.getRequirement()).isEqualTo("expectedName");
 	}
 
 	public class FeatureWithAnnotationName extends AbstractTestFeature {
 
-		@TestStep("expectedName")
-		public void notThisName() {
+		@TestStep("expectedName") public void notThisName() {
 		}
 	}
 }

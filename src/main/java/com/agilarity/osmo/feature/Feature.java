@@ -37,10 +37,8 @@ import com.agilarity.osmo.runner.OsmoTestException;
 /**
  * Responsible for defining a feature model.
  *
- * @param D
- *            Test driver is the facade to the system under test
- * @param S
- *            Test state is used to track the state of the system under test
+ * @param D Test driver is the facade to the system under test
+ * @param S Test state is used to track the state of the system under test
  */
 public abstract class Feature<D, S> { // NOPMD
 	private static final int EXPECTED_STEPS = 1;
@@ -51,15 +49,12 @@ public abstract class Feature<D, S> { // NOPMD
 	protected final S state; // NOCS NOPMD
 
 	/**
-	 * @param requirements
-	 *            The requirements
-	 * @param driver
-	 *            Test driver is the facade to the system under test
-	 * @param state
-	 *            Test state is used to track the state of the system under test
+	 * @param requirements The requirements
+	 * @param driver Test driver is the facade to the system under test
+	 * @param state Test state is used to track the state of the system under
+	 *        test
 	 */
-	public Feature(final Requirements requirements, final D driver,
-			final S state) {
+	public Feature(final Requirements requirements, final D driver, final S state) {
 		this.requirements = requirements;
 		this.driver = driver;
 		this.state = state;
@@ -122,8 +117,7 @@ public abstract class Feature<D, S> { // NOPMD
 
 	private void requireExactlyOneTestStep(final List<Method> testSteps) {
 		if (testSteps.size() != EXPECTED_STEPS) {
-			final String error = format(ONE_STEP, getClass().getSimpleName(),
-					testSteps.size());
+			final String error = format(ONE_STEP, getClass().getSimpleName(), testSteps.size());
 			throw new OsmoTestException(error);
 		}
 	}

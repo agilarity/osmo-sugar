@@ -34,8 +34,7 @@ public class OsmoTestException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * @param message
-	 *            Requirements coverage message
+	 * @param message Requirements coverage message
 	 */
 	public OsmoTestException(final String message) {
 		super(message);

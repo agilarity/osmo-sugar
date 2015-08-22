@@ -34,16 +34,14 @@ import com.agilarity.osmo.example.model.AssertWarning;
 import com.agilarity.osmo.example.model.RemoveSmoke;
 import com.agilarity.osmo.feature.FeatureFactory;
 
-public class SmokeDectectorModelFactory extends
-FeatureFactory<SmokeDetector, SmokeDetectorState> {
+public class SmokeDectectorModelFactory extends FeatureFactory<SmokeDetector, SmokeDetectorState> {
 
-	public SmokeDectectorModelFactory(final Requirements requirements,
-			final SmokeDetector driver, final SmokeDetectorState state) {
+	public SmokeDectectorModelFactory(final Requirements requirements, final SmokeDetector driver,
+			final SmokeDetectorState state) {
 		super(requirements, driver, state);
 	}
 
-	@Override
-	public void createModelObjects(final TestModels testModels) {
+	@Override public void createModelObjects(final TestModels testModels) {
 		testModels.add(new AssertEmergency(requirements, driver, state));
 		testModels.add(new AssertSafe(requirements, driver, state));
 		testModels.add(new AssertWarning(requirements, driver, state));

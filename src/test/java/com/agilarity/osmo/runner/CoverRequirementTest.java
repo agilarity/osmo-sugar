@@ -32,8 +32,7 @@ import osmo.tester.annotation.TestStep;
 import osmo.tester.model.Requirements;
 
 public class CoverRequirementTest {
-	@Test
-	public void shouldRequireCoverage() {
+	@Test public void shouldRequireCoverage() {
 		final CoverRequirement model = new CoverRequirement(new Requirements());
 		final OSMOConfiguration configuration = createConfiguration(model);
 		final OsmoTestRunner runner = new OsmoTestRunner(configuration);
@@ -49,8 +48,7 @@ public class CoverRequirementTest {
 			this.requirements.add("R1");
 		}
 
-		@TestStep
-		public void coverRequirements() {
+		@TestStep public void coverRequirements() {
 			requirements.covered("R1");
 		}
 	}

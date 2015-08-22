@@ -36,22 +36,18 @@ import com.agilarity.osmo.feature.models.AbstractTestFeature;
 public class AddRequirementTest {
 	private Requirements requirements;
 
-	@BeforeTest
-	public void beforeTest() {
+	@BeforeTest public void beforeTest() {
 		requirements = new Requirements();
 	}
 
-	@Test
-	public void shouldAddRequirement() {
+	@Test public void shouldAddRequirement() {
 		final SimpleFeature feature = createFeature();
 
-		assertThat(
-				feature.getRequirements().getRequirements()
-						.contains(feature.getRequirement())).isTrue();
+		assertThat(feature.getRequirements().getRequirements().contains(feature.getRequirement()))
+				.isTrue();
 	}
 
-	@Test
-	public void shouldOnlyAddRequirementOnce() {
+	@Test public void shouldOnlyAddRequirementOnce() {
 		createFeature();
 		createFeature();
 	}
@@ -62,8 +58,7 @@ public class AddRequirementTest {
 			super(requirements);
 		}
 
-		@TestStep()
-		public void doNothing() {
+		@TestStep() public void doNothing() {
 		}
 	}
 

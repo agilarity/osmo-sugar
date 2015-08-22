@@ -35,18 +35,16 @@ import com.agilarity.osmo.feature.Feature;
 
 public class AssertSafe extends Feature<SmokeDetector, SmokeDetectorState> {
 
-	public AssertSafe(final Requirements requirements,
-			final SmokeDetector driver, final SmokeDetectorState state) {
+	public AssertSafe(final Requirements requirements, final SmokeDetector driver,
+			final SmokeDetectorState state) {
 		super(requirements, driver, state);
 	}
 
-	@Guard
-	public boolean guardDetectSafeStatus() {
+	@Guard public boolean guardDetectSafeStatus() {
 		return state.getLevel() < 6;
 	}
 
-	@TestStep
-	public void detectSafeStatus() {
+	@TestStep public void detectSafeStatus() {
 		assertThat(driver.detect(state.getLevel())).isEqualTo(SAFE);
 		coverRequirement();
 	}

@@ -29,10 +29,8 @@ import osmo.tester.model.Requirements;
 /**
  * Responsible for defining a feature model factory.
  *
- * @param D
- *            Test driver is the facade to the system under test
- * @param S
- *            Test state is used to track the state of the system under test
+ * @param D Test driver is the facade to the system under test
+ * @param S Test state is used to track the state of the system under test
  */
 public abstract class FeatureFactory<D, S> implements ModelFactory { // NOPMD
 
@@ -41,15 +39,11 @@ public abstract class FeatureFactory<D, S> implements ModelFactory { // NOPMD
 	protected final S state; // NOCS NOPMD
 
 	/**
-	 * @param requirements
-	 *            the Requirements
-	 * @param driver
-	 *            the System driver
-	 * @param state
-	 *            the Test state
+	 * @param requirements the Requirements
+	 * @param driver the System driver
+	 * @param state the Test state
 	 */
-	public FeatureFactory(final Requirements requirements, final D driver,
-			final S state) {
+	public FeatureFactory(final Requirements requirements, final D driver, final S state) {
 		super();
 		this.requirements = requirements;
 		this.driver = driver;
