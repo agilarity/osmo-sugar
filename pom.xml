@@ -32,7 +32,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.3</version>
+					<version>3.5</version>
 					<configuration>
 						<rulesets>
 							<ruleset>${basedir}/src/test/resources/pmd.xml</ruleset>
