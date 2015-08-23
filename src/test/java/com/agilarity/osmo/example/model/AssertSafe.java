@@ -40,11 +40,13 @@ public class AssertSafe extends Feature<SmokeDetector, SmokeDetectorState> {
 		super(requirements, driver, state);
 	}
 
-	@Guard public boolean guardDetectSafeStatus() {
+	@Guard
+	public boolean guardDetectSafeStatus() {
 		return state.getLevel() < 6;
 	}
 
-	@TestStep public void detectSafeStatus() {
+	@TestStep
+	public void detectSafeStatus() {
 		assertThat(driver.detect(state.getLevel())).isEqualTo(SAFE);
 		coverRequirement();
 	}

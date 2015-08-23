@@ -36,11 +36,13 @@ public class RemoveSmoke {
 		this.state = state;
 	}
 
-	@Guard public boolean guardDecrementSmokeLevel() {
+	@Guard
+	public boolean guardDecrementSmokeLevel() {
 		return state.getLevel() > 0;
 	}
 
-	@TestStep public void decrementSmokeLevel() {
+	@TestStep
+	public void decrementSmokeLevel() {
 		state.decrement();
 	}
 }

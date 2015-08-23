@@ -41,7 +41,8 @@ public class SmokeDectectorModelFactory extends FeatureFactory<SmokeDetector, Sm
 		super(requirements, driver, state);
 	}
 
-	@Override public void createModelObjects(final TestModels testModels) {
+	@Override
+	public void createModelObjects(final TestModels testModels) {
 		testModels.add(new AssertEmergency(requirements, driver, state));
 		testModels.add(new AssertSafe(requirements, driver, state));
 		testModels.add(new AssertWarning(requirements, driver, state));

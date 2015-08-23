@@ -32,15 +32,18 @@ import com.agilarity.osmo.runner.OsmoTestException;
 
 public class RequireTestStepAnnotatonTest {
 
-	@Test public void shouldPassWithOneTestStep() {
+	@Test
+	public void shouldPassWithOneTestStep() {
 		new OneTestStep();
 	}
 
-	@Test(expectedExceptions = { OsmoTestException.class }) public void shouldRequireOneTestStep() {
+	@Test(expectedExceptions = { OsmoTestException.class })
+	public void shouldRequireOneTestStep() {
 		new NoTestSteps();
 	}
 
-	@Test(expectedExceptions = { OsmoTestException.class }) public void shouldPreventMoreThanOneTestStep() {
+	@Test(expectedExceptions = { OsmoTestException.class })
+	public void shouldPreventMoreThanOneTestStep() {
 		new TwoTestSteps();
 	}
 
@@ -49,16 +52,19 @@ public class RequireTestStepAnnotatonTest {
 
 	public class OneTestStep extends AbstractTestFeature {
 
-		@TestStep public void oneStep() {
+		@TestStep
+		public void oneStep() {
 		}
 	}
 
 	public class TwoTestSteps extends AbstractTestFeature {
 
-		@TestStep public void oneStep() {
+		@TestStep
+		public void oneStep() {
 		}
 
-		@TestStep public void twoStep() {
+		@TestStep
+		public void twoStep() {
 		}
 	}
 }

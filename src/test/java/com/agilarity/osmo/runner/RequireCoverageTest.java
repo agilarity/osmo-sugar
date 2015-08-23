@@ -32,7 +32,8 @@ import osmo.tester.model.Requirements;
 
 public class RequireCoverageTest {
 
-	@Test(expectedExceptions = { OsmoTestException.class }) public void shouldRequireCoverage() {
+	@Test(expectedExceptions = { OsmoTestException.class })
+	public void shouldRequireCoverage() {
 		final RequireCoverage model = new RequireCoverage(new Requirements());
 		final OsmoTestRunner runner = new OsmoTestRunner(createConfiguration(model));
 		runner.generateTest();
@@ -47,7 +48,8 @@ public class RequireCoverageTest {
 			this.requirements.add("R1");
 		}
 
-		@TestStep public void failToCoverRequirements() {
+		@TestStep
+		public void failToCoverRequirements() {
 		}
 	}
 }

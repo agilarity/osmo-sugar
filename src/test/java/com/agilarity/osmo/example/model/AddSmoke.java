@@ -35,7 +35,8 @@ public class AddSmoke {
 		this.state = state;
 	}
 
-	@TestStep public void incrementSmokeLevel() {
+	@TestStep
+	public void incrementSmokeLevel() {
 		state.increment();
 	}
 }

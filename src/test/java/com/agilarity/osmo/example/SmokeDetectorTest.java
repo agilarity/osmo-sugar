@@ -39,7 +39,8 @@ public class SmokeDetectorTest {
 	private Requirements requirements;
 	private OSMOConfiguration configuration;
 
-	@BeforeTest public void beforeTest() {
+	@BeforeTest
+	public void beforeTest() {
 		configuration = new OSMOConfiguration();
 		configuration.setSuiteEndCondition(new Length(1));
 		configuration.setTestEndCondition(new Length(400));
@@ -50,7 +51,8 @@ public class SmokeDetectorTest {
 		runner = new OsmoTestRunner(configuration);
 	}
 
-	@Test public void shouldDetectSmokeLevels() {
+	@Test
+	public void shouldDetectSmokeLevels() {
 		runner.generateTest();
 	}
 }

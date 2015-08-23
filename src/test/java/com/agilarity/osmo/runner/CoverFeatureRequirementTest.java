@@ -33,7 +33,8 @@ import osmo.tester.annotation.TestStep;
 import com.agilarity.osmo.feature.models.AbstractTestFeature;
 
 public class CoverFeatureRequirementTest {
-	@Test public void shouldRequireCoverage() {
+	@Test
+	public void shouldRequireCoverage() {
 		final TestFeature model = new TestFeature();
 		final OSMOConfiguration configuration = createConfiguration(model);
 		final OsmoTestRunner runner = new OsmoTestRunner(configuration);
@@ -42,7 +43,8 @@ public class CoverFeatureRequirementTest {
 
 	public class TestFeature extends AbstractTestFeature {
 
-		@TestStep public void doWork() {
+		@TestStep
+		public void doWork() {
 			coverRequirement();
 		}
 	}
