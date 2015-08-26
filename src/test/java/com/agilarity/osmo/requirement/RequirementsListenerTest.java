@@ -3,7 +3,7 @@ package com.agilarity.osmo.requirement;
 import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import osmo.tester.OSMOTester;
@@ -14,22 +14,21 @@ public class RequirementsListenerTest {
 	private Requirements requirements;
 	private OSMOTester osmoTester;
 
-	@BeforeTest
+	@BeforeMethod
 	public void before() throws NoSuchMethodException, SecurityException {
 		requirements = new Requirements();
 		osmoTester = new OSMOTester();
 		osmoTester.addListener(new RequirementAnnotationListener());
-		// GIVEN a model with annotated requirements
-		osmoTester.addModelObject(new DoSomething(requirements));
-		// GIVEN a model without requirement annotations
-		osmoTester.addModelObject(new NoRequirementAnnotations(requirements));
-		// WHEN the tests are generated
-		osmoTester.generate(1);
-
 	}
 
 	@Test
 	public void shouldAddRequirements() {
+		// GIVEN a model with annotated requirements
+		osmoTester.addModelObject(new DoSomething(requirements));
+
+		// WHEN the tests are generated
+		osmoTester.generate(1);
+
 		// THEN the there will be one requirement for each annotation
 		assertThat(requirements.getRequirements()).containsAll(
 				asList("DoSomething.shouldDoSomething", "DoSomething.shouldDoSomethingElse"));
@@ -37,11 +36,30 @@ public class RequirementsListenerTest {
 
 	@Test
 	public void shouldCoverRequirements() {
+		// GIVEN a model with annotated requirements
+		osmoTester.addModelObject(new DoSomething(requirements));
+
+		// WHEN the tests are generated
+		osmoTester.generate(1);
+
+		// THEN the requirements will be covered
+		assertThat(requirements.getMissingCoverage()).isEmpty();
+	}
+
+	@Test
+	public void shouldNotRequireAnnotations() {
+		// GIVEN a model without requirement annotations
+		osmoTester.addModelObject(new NoRequirementAnnotations(requirements));
+
+		// WHEN the tests are generated
+		osmoTester.generate(1);
+
 		// THEN the requirements will be covered
 		assertThat(requirements.getMissingCoverage()).isEmpty();
 	}
 
 	public class DoSomething {
+		@SuppressWarnings("unused")
 		private final Requirements requirements;
 
 		public DoSomething(final Requirements requirements) {
