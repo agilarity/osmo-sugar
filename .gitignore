@@ -27,6 +27,7 @@ local.properties
 .*.md.html
 .checkstyle
 reports/
+.pmd
 
 # External tool builders
 .externalToolBuilders/
