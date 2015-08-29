@@ -19,54 +19,60 @@ import osmo.tester.model.Requirements;
  * Add requirements from the test model and cover them on success.
  */
 public class RequirementAnnotationListener extends AbstractListener {
-	private transient Requirements requirements;
-	private ConcurrentMap<String, Collection<String>> stepRequirements;
+  private transient Requirements requirements;
+  private transient ConcurrentMap<String, Collection<String>> stepRequirements;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void init(final long seed, final FSM fsm, final OSMOConfiguration config) {
-		requirements = fsm.getRequirements();
-		stepRequirements = new ConcurrentHashMap<String, Collection<String>>();
-		loadStepRequirements(fsm);
-		stepRequirements.forEach((k, v) -> addRequirements(v));
-	}
+  /**
+   * Register the requirements for a step. {@inheritDoc}
+   */
+  @Override
+  public void init(final long seed, final FSM fsm, final OSMOConfiguration config) {
+    requirements = fsm.getRequirements();
+    stepRequirements = new ConcurrentHashMap<String, Collection<String>>();
+    loadStepRequirements(fsm);
+    stepRequirements.forEach((modelObjectName, name) -> addRequirements(name));
+  }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void step(final TestCaseStep step) {
-		final Collection<String> requirementNames = stepRequirements.get(step.getName());
-		if (requirementNames != null) {
-			requirementNames.forEach(n -> requirements.covered(n));
-		}
-	}
+  /**
+   * Cover the requirements because the step did not fail. {@inheritDoc}
+   */
+  @Override
+  public void step(final TestCaseStep step) {
+    final Collection<String> requirementNames = stepRequirements.get(step.getName());
+    if (requirementNames != null) {
+      requirementNames.forEach(requirementName -> requirements.covered(requirementName));
+    }
+  }
 
-	private void loadStepRequirements(final FSM fsm) {
-		final Collection<FSMTransition> transitions = fsm.getTransitions();
-		for (final FSMTransition fsmTransition : transitions) {
-			final Object modelObject = fsmTransition.getTransition().getModelObject();
-			final String modelObjectName = modelObject.getClass().getSimpleName();
-			final Collection<String> reqs = fetchRequirementNames(modelObject, modelObjectName);
-			stepRequirements.put(modelObjectName, reqs);
-		}
-	}
+  private void loadStepRequirements(final FSM fsm) {
+    fsm.getTransitions().forEach(
+        fsmTransition -> stepRequirements.put(
+            getModelObjectName(getModelObject(fsmTransition)),
+            fetchRequirementNames(getModelObject(fsmTransition),
+                getModelObjectName(getModelObject(fsmTransition)))));
+  }
 
-	private Collection<String> fetchRequirementNames(final Object modelObject,
-			final String modelObjectName) {
+  private String getModelObjectName(final Object modelObject) {
+    return modelObject.getClass().getSimpleName();
+  }
 
-		return asList(modelObject.getClass().getMethods()).stream()
-				.filter(m -> m.getAnnotation(Requirement.class) != null)
-				.map(m -> buildRequirement(modelObjectName, m.getName())).collect(toList());
-	}
+  private Object getModelObject(final FSMTransition fsmTransition) {
+    return fsmTransition.getTransition().getModelObject();
+  }
 
-	private String buildRequirement(final String modelObjectName, final String name) {
-		return format("%s.%s", modelObjectName, name);
-	}
+  private Collection<String> fetchRequirementNames(final Object modelObject,
+      final String modelObjectName) {
 
-	private void addRequirements(final Collection<String> requirementNames) {
-		requirementNames.forEach(r -> requirements.add(r));
-	}
+    return asList(modelObject.getClass().getMethods()).stream()
+        .filter(method -> method.getAnnotation(Requirement.class) != null)
+        .map(method -> buildRequirement(modelObjectName, method.getName())).collect(toList());
+  }
+
+  private String buildRequirement(final String modelObjectName, final String requirementName) {
+    return format("%s.%s", modelObjectName, requirementName);
+  }
+
+  private void addRequirements(final Collection<String> requirementNames) {
+    requirementNames.forEach(requirementName -> requirements.add(requirementName));
+  }
 }
