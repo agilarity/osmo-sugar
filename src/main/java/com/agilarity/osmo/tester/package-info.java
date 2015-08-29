@@ -24,4 +24,5 @@
 /**
  * Provides OSMO testing support.
  */
+
 package com.agilarity.osmo.tester;

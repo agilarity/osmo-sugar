@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.feature;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -33,16 +34,16 @@ import com.agilarity.osmo.feature.models.AbstractTestFeature;
 
 public class NameRequirementTest {
 
-	@Test
-	public void shouldPreferAnnotationName() {
-		final FeatureWithAnnotationName feature = new FeatureWithAnnotationName();
-		assertThat(feature.getRequirement()).isEqualTo("expectedName");
-	}
+  @Test
+  public void shouldPreferAnnotationName() {
+    final FeatureWithAnnotationName feature = new FeatureWithAnnotationName();
+    assertThat(feature.getRequirement()).isEqualTo("expectedName");
+  }
 
-	public class FeatureWithAnnotationName extends AbstractTestFeature {
+  public class FeatureWithAnnotationName extends AbstractTestFeature {
 
-		@TestStep("expectedName")
-		public void notThisName() {
-		}
-	}
+    @TestStep("expectedName")
+    public void notThisName() {
+    }
+  }
 }

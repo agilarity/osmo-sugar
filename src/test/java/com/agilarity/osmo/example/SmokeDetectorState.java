@@ -21,20 +21,21 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.example;
 
 public class SmokeDetectorState {
-	private int level;
+  private int level;
 
-	public void increment() {
-		++level;
-	}
+  public void increment() {
+    ++level;
+  }
 
-	public void decrement() {
-		--level;
-	}
+  public void decrement() {
+    --level;
+  }
 
-	public int getLevel() {
-		return level;
-	}
+  public int getLevel() {
+    return level;
+  }
 }

@@ -1,3 +1,4 @@
+
 package com.agilarity.osmo.requirement;
 
 import static java.lang.String.format;

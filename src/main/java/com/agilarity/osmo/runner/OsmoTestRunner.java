@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.runner;
 
 import java.util.Collection;
@@ -33,44 +34,46 @@ import osmo.tester.model.Requirements;
  * Responsible for running OSMO tests.
  */
 public class OsmoTestRunner {
-	private static final int DEFAULT_SEED = 357;
-	private final transient OSMOTester tester;
+  private static final int DEFAULT_SEED = 357;
+  private final transient OSMOTester tester;
 
-	/**
-	 * @param configuration Test configuration
-	 */
-	public OsmoTestRunner(final OSMOConfiguration configuration) {
-		super();
-		tester = new OSMOTester();
-		tester.setConfig(configuration);
-	}
+  /**
+   * Configure runner.
+   *
+   * @param configuration Test configuration
+   */
+  public OsmoTestRunner(final OSMOConfiguration configuration) {
+    super();
+    tester = new OSMOTester();
+    tester.setConfig(configuration);
+  }
 
-	/**
-	 * Generate the tests and assure every requirement is covered.
-	 */
-	public void generateTest() {
-		generateTest(DEFAULT_SEED);
-		assertCoverage();
-	}
+  /**
+   * Generate the tests and assure every requirement is covered.
+   */
+  public void generateTest() {
+    generateTest(DEFAULT_SEED);
+    assertCoverage();
+  }
 
-	/**
-	 * Generate the tests and assure every requirement is covered.
-	 *
-	 * @param seed Value used to randomize test steps
-	 */
-	public void generateTest(final int seed) {
-		tester.generate(seed);
-		assertCoverage();
-	}
+  /**
+   * Generate the tests and assure every requirement is covered.
+   *
+   * @param seed Value used to randomize test steps
+   */
+  public void generateTest(final int seed) {
+    tester.generate(seed);
+    assertCoverage();
+  }
 
-	private void assertCoverage() {
-		final Requirements requirements = tester.getSuite().getRequirements();
+  private void assertCoverage() {
+    final Requirements requirements = tester.getSuite().getRequirements();
 
-		if (requirements != null) {
-			final Collection<String> missingCoverage = requirements.getMissingCoverage();
-			if (!missingCoverage.isEmpty()) {
-				throw new OsmoTestException("Not covered " + missingCoverage.toString());
-			}
-		}
-	}
+    if (requirements != null) {
+      final Collection<String> missingCoverage = requirements.getMissingCoverage();
+      if (!missingCoverage.isEmpty()) {
+        throw new OsmoTestException("Not covered " + missingCoverage.toString());
+      }
+    }
+  }
 }

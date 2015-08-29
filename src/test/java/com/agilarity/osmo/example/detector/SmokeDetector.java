@@ -30,16 +30,16 @@ import static com.agilarity.osmo.example.detector.SafetyStatus.WARNING;
 
 public class SmokeDetector {
 
-	private static final int MAX_WARNING = 14;
-	private static final int MAX_SAFE = 6;
+  private static final int MAX_WARNING = 14;
+  private static final int MAX_SAFE = 6;
 
-	public SafetyStatus detect(final int level) {
-		if (level < MAX_SAFE) {
-			return SAFE;
-		} else if (level < MAX_WARNING) {
-			return WARNING;
-		} else {
-			return EMERGENCY;
-		}
-	}
+  public SafetyStatus detect(final int level) {
+    if (level < MAX_SAFE) {
+      return SAFE;
+    } else if (level < MAX_WARNING) {
+      return WARNING;
+    } else {
+      return EMERGENCY;
+    }
+  }
 }

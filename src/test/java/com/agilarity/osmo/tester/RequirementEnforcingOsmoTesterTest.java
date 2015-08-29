@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.tester;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -32,125 +33,125 @@ import osmo.tester.annotation.TestStep;
 import osmo.tester.model.Requirements;
 
 public class RequirementEnforcingOsmoTesterTest {
-	private RequirementEnforcingOsmoTester tester;
+  private RequirementEnforcingOsmoTester tester;
 
-	@Test
-	public void shouldPassWithoutRequirementsObject() {
-		// GIVEN a model without a requirements object
-		tester = new RequirementEnforcingOsmoTester();
-		tester.addModelObject(new SimpleModel());
+  @Test
+  public void shouldPassWithoutRequirementsObject() {
+    // GIVEN a model without a requirements object
+    tester = new RequirementEnforcingOsmoTester();
+    tester.addModelObject(new SimpleModel());
 
-		// WHEN the tests are generated
-		tester.generate(1);
+    // WHEN the tests are generated
+    tester.generate(1);
 
-		// THEN the test will not fail because of missing coverage
-	}
+    // THEN the test will not fail because of missing coverage
+  }
 
-	@Test
-	public void shouldPassWithoutRequirements() {
-		// GIVEN no requirements are added
-		tester = new RequirementEnforcingOsmoTester();
-		tester.addModelObject(new EmptyRequirementsModel(new Requirements()));
+  @Test
+  public void shouldPassWithoutRequirements() {
+    // GIVEN no requirements are added
+    tester = new RequirementEnforcingOsmoTester();
+    tester.addModelObject(new EmptyRequirementsModel(new Requirements()));
 
-		// WHEN the tests are generated
-		tester.generate(1);
+    // WHEN the tests are generated
+    tester.generate(1);
 
-		// THEN the tests will not fail because of missing coverage
-	}
+    // THEN the tests will not fail because of missing coverage
+  }
 
-	@Test
-	public void shouldPassWithCoverage() {
-		// GIVEN a model with requirements
-		tester = new RequirementEnforcingOsmoTester();
-		tester.addModelObject(new RequirementsModel(new Requirements()));
+  @Test
+  public void shouldPassWithCoverage() {
+    // GIVEN a model with requirements
+    tester = new RequirementEnforcingOsmoTester();
+    tester.addModelObject(new RequirementsModel(new Requirements()));
 
-		// WHEN the tests are generated
-		tester.generate(1);
+    // WHEN the tests are generated
+    tester.generate(1);
 
-		// THEN the tests will not fail because of missing coverage
-	}
+    // THEN the tests will not fail because of missing coverage
+  }
 
-	@Test
-	public void shouldFailWithMissingCoverage() {
-		// GIVEN a model with requirements
-		tester = new RequirementEnforcingOsmoTester();
-		tester.addModelObject(new MissingCoverageModel(new Requirements()));
+  @Test
+  public void shouldFailWithMissingCoverage() {
+    // GIVEN a model with requirements
+    tester = new RequirementEnforcingOsmoTester();
+    tester.addModelObject(new MissingCoverageModel(new Requirements()));
 
-		// WHEN the tests are generated
-		try {
-			tester.generate(1);
-			fail("Expected MissingCoverageException");
-		} catch (final MissingCoverageException e) {
-			assertThat(e.getMessage()).isEqualTo("Not covered [R3, R4]");
-		}
+    // WHEN the tests are generated
+    try {
+      tester.generate(1);
+      fail("Expected MissingCoverageException");
+    } catch (final MissingCoverageException e) {
+      assertThat(e.getMessage()).isEqualTo("Not covered [R3, R4]");
+    }
 
-		// THEN the tests will not fail because of missing coverage
-	}
+    // THEN the tests will not fail because of missing coverage
+  }
 
-	@Test
-	public void shouldReportMissingCoverage() {
-		// GIVEN a model with requirements
-		tester = new RequirementEnforcingOsmoTester();
-		tester.addModelObject(new RequirementsModel(new Requirements()));
+  @Test
+  public void shouldReportMissingCoverage() {
+    // GIVEN a model with requirements
+    tester = new RequirementEnforcingOsmoTester();
+    tester.addModelObject(new RequirementsModel(new Requirements()));
 
-		// WHEN the tests are generated
-		tester.generate(1);
+    // WHEN the tests are generated
+    tester.generate(1);
 
-		// THEN the tests will not fail because of missing coverage
-	}
+    // THEN the tests will not fail because of missing coverage
+  }
 
-	public class SimpleModel {
+  public class SimpleModel {
 
-		@TestStep
-		public void simpleStep() {
+    @TestStep
+    public void simpleStep() {
 
-		}
-	}
+    }
+  }
 
-	public class EmptyRequirementsModel {
-		@SuppressWarnings("unused")
-		private final Requirements requirements;
+  public class EmptyRequirementsModel {
+    @SuppressWarnings("unused")
+    private final Requirements requirements;
 
-		public EmptyRequirementsModel(final Requirements requirements) {
-			super();
-			this.requirements = requirements;
-		}
+    public EmptyRequirementsModel(final Requirements requirements) {
+      super();
+      this.requirements = requirements;
+    }
 
-		@TestStep
-		public void stepWithoutRequirements() {
+    @TestStep
+    public void stepWithoutRequirements() {
 
-		}
-	}
+    }
+  }
 
-	public class RequirementsModel {
-		private final Requirements requirements;
+  public class RequirementsModel {
+    private final Requirements requirements;
 
-		public RequirementsModel(final Requirements requirements) {
-			super();
-			this.requirements = requirements;
-			this.requirements.add("R1");
-			this.requirements.add("R2");
-		}
+    public RequirementsModel(final Requirements requirements) {
+      super();
+      this.requirements = requirements;
+      this.requirements.add("R1");
+      this.requirements.add("R2");
+    }
 
-		@TestStep
-		public void stepCoveringRequirements() {
-			requirements.covered("R1");
-			requirements.covered("R2");
-		}
-	}
+    @TestStep
+    public void stepCoveringRequirements() {
+      requirements.covered("R1");
+      requirements.covered("R2");
+    }
+  }
 
-	public class MissingCoverageModel {
-		private final Requirements requirements;
+  public class MissingCoverageModel {
+    private final Requirements requirements;
 
-		public MissingCoverageModel(final Requirements requirements) {
-			super();
-			this.requirements = requirements;
-			this.requirements.add("R3");
-			this.requirements.add("R4");
-		}
+    public MissingCoverageModel(final Requirements requirements) {
+      super();
+      this.requirements = requirements;
+      this.requirements.add("R3");
+      this.requirements.add("R4");
+    }
 
-		@TestStep
-		public void stepMissingCoverage() {
-		}
-	}
+    @TestStep
+    public void stepMissingCoverage() {
+    }
+  }
 }

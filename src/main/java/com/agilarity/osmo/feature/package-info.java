@@ -24,4 +24,5 @@
 /**
  * Support OSMO testing with a strict feature model.
  */
+
 package com.agilarity.osmo.feature;

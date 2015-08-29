@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.feature.models;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,12 +31,12 @@ import com.agilarity.osmo.feature.Feature;
 
 public abstract class AbstractTestFeature extends Feature<TestDriver, TestStatus> {
 
-	public AbstractTestFeature() {
-		this(new Requirements());
-	}
+  public AbstractTestFeature() {
+    this(new Requirements());
+  }
 
-	public AbstractTestFeature(final Requirements requirements) {
-		super(requirements, new TestDriver(), new TestStatus());
-		assertThat(getRequirements()).isNotNull();
-	}
+  public AbstractTestFeature(final Requirements requirements) {
+    super(requirements, new TestDriver(), new TestStatus());
+    assertThat(getRequirements()).isNotNull();
+  }
 }

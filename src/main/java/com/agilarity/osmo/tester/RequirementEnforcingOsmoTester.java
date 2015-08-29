@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.tester;
 
 import java.util.Collection;
@@ -32,16 +33,15 @@ import osmo.tester.OSMOTester;
  */
 public class RequirementEnforcingOsmoTester extends OSMOTester {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void generate(final long seed) {
-		super.generate(seed);
-		final Collection<String> missingCoverage = getSuite().getRequirements()
-				.getMissingCoverage();
-		if (!missingCoverage.isEmpty()) {
-			throw new MissingCoverageException(missingCoverage);
-		}
-	}
+  /**
+   * Generate tests and require coverage. {@inheritDoc}
+   */
+  @Override
+  public void generate(final long seed) {
+    super.generate(seed);
+    final Collection<String> missingCoverage = getSuite().getRequirements().getMissingCoverage();
+    if (!missingCoverage.isEmpty()) {
+      throw new MissingCoverageException(missingCoverage);
+    }
+  }
 }

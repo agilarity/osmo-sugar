@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.example.model;
 
 import static com.agilarity.osmo.example.detector.SafetyStatus.SAFE;
@@ -35,19 +36,19 @@ import com.agilarity.osmo.feature.Feature;
 
 public class AssertSafe extends Feature<SmokeDetector, SmokeDetectorState> {
 
-	public AssertSafe(final Requirements requirements, final SmokeDetector driver,
-			final SmokeDetectorState state) {
-		super(requirements, driver, state);
-	}
+  public AssertSafe(final Requirements requirements, final SmokeDetector driver,
+      final SmokeDetectorState state) {
+    super(requirements, driver, state);
+  }
 
-	@Guard
-	public boolean guardDetectSafeStatus() {
-		return state.getLevel() < 6;
-	}
+  @Guard
+  public boolean guardDetectSafeStatus() {
+    return state.getLevel() < 6;
+  }
 
-	@TestStep
-	public void detectSafeStatus() {
-		assertThat(driver.detect(state.getLevel())).isEqualTo(SAFE);
-		coverRequirement();
-	}
+  @TestStep
+  public void detectSafeStatus() {
+    assertThat(driver.detect(state.getLevel())).isEqualTo(SAFE);
+    coverRequirement();
+  }
 }

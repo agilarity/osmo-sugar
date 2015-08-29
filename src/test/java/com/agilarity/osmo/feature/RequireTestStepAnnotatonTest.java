@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.feature;
 
 import org.testng.annotations.Test;
@@ -32,39 +33,39 @@ import com.agilarity.osmo.runner.OsmoTestException;
 
 public class RequireTestStepAnnotatonTest {
 
-	@Test
-	public void shouldPassWithOneTestStep() {
-		new OneTestStep();
-	}
+  @Test
+  public void shouldPassWithOneTestStep() {
+    new OneTestStep();
+  }
 
-	@Test(expectedExceptions = { OsmoTestException.class })
-	public void shouldRequireOneTestStep() {
-		new NoTestSteps();
-	}
+  @Test(expectedExceptions = { OsmoTestException.class })
+  public void shouldRequireOneTestStep() {
+    new NoTestSteps();
+  }
 
-	@Test(expectedExceptions = { OsmoTestException.class })
-	public void shouldPreventMoreThanOneTestStep() {
-		new TwoTestSteps();
-	}
+  @Test(expectedExceptions = { OsmoTestException.class })
+  public void shouldPreventMoreThanOneTestStep() {
+    new TwoTestSteps();
+  }
 
-	public class NoTestSteps extends AbstractTestFeature {
-	}
+  public class NoTestSteps extends AbstractTestFeature {
+  }
 
-	public class OneTestStep extends AbstractTestFeature {
+  public class OneTestStep extends AbstractTestFeature {
 
-		@TestStep
-		public void oneStep() {
-		}
-	}
+    @TestStep
+    public void oneStep() {
+    }
+  }
 
-	public class TwoTestSteps extends AbstractTestFeature {
+  public class TwoTestSteps extends AbstractTestFeature {
 
-		@TestStep
-		public void oneStep() {
-		}
+    @TestStep
+    public void oneStep() {
+    }
 
-		@TestStep
-		public void twoStep() {
-		}
-	}
+    @TestStep
+    public void twoStep() {
+    }
+  }
 }

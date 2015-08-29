@@ -24,4 +24,5 @@
 /**
  * Supports OSMO testing from other testing frameworks.
  */
+
 package com.agilarity.osmo.runner;

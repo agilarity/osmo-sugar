@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.example.model;
 
 import osmo.tester.annotation.Guard;
@@ -29,20 +30,20 @@ import osmo.tester.annotation.TestStep;
 import com.agilarity.osmo.example.SmokeDetectorState;
 
 public class RemoveSmoke {
-	private final SmokeDetectorState state;
+  private final SmokeDetectorState state;
 
-	public RemoveSmoke(final SmokeDetectorState state) {
-		super();
-		this.state = state;
-	}
+  public RemoveSmoke(final SmokeDetectorState state) {
+    super();
+    this.state = state;
+  }
 
-	@Guard
-	public boolean guardDecrementSmokeLevel() {
-		return state.getLevel() > 0;
-	}
+  @Guard
+  public boolean guardDecrementSmokeLevel() {
+    return state.getLevel() > 0;
+  }
 
-	@TestStep
-	public void decrementSmokeLevel() {
-		state.decrement();
-	}
+  @TestStep
+  public void decrementSmokeLevel() {
+    state.decrement();
+  }
 }

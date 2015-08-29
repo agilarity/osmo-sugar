@@ -25,5 +25,5 @@
 package com.agilarity.osmo.example.detector;
 
 public enum SafetyStatus {
-	SAFE, WARNING, EMERGENCY;
+  SAFE, WARNING, EMERGENCY;
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.runner;
 
 import osmo.tester.OSMOConfiguration;
@@ -28,11 +29,11 @@ import osmo.tester.generator.endcondition.Length;
 
 public class ConfigurationBuilder {
 
-	public static OSMOConfiguration createConfiguration(final Object model) {
-		final OSMOConfiguration configuration = new OSMOConfiguration();
-		configuration.setTestEndCondition(new Length(1));
-		configuration.setSuiteEndCondition(new Length(1));
-		configuration.addModelObject(model);
-		return configuration;
-	}
+  public static OSMOConfiguration createConfiguration(final Object model) {
+    final OSMOConfiguration configuration = new OSMOConfiguration();
+    configuration.setTestEndCondition(new Length(1));
+    configuration.setSuiteEndCondition(new Length(1));
+    configuration.addModelObject(model);
+    return configuration;
+  }
 }

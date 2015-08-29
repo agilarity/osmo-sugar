@@ -19,7 +19,8 @@
 		<project.reporting.outputEncoding>${encoding}</project.reporting.outputEncoding>
 		<skip.coverage>false</skip.coverage>
 		<java.version>1.8</java.version>
-		<code.format>${basedir}/src/test/resources/eclipse-formatter.xml</code.format>
+		<code.format>${basedir}/src/test/resources/formatter.xml</code.format>
+		<style.check>${basedir}/src/test/resources/checkstyle.xml</style.check>
 	</properties>
 	<build>
 		<pluginManagement>
@@ -27,7 +28,14 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
-					<version>2.14</version>
+					<version>2.16</version>
+					<dependencies>
+						<dependency>
+							<groupId>com.puppycrawl.tools</groupId>
+							<artifactId>checkstyle</artifactId>
+							<version>6.9</version>
+						</dependency>
+					</dependencies>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -246,10 +254,9 @@
 						<id>validate</id>
 						<phase>validate</phase>
 						<configuration>
-							<configLocation>${basedir}/src/test/resources/checkstyle.xml</configLocation>
+							<configLocation>${style.check}</configLocation>
 							<encoding>${encoding}</encoding>
 							<consoleOutput>true</consoleOutput>
-							<failsOnError>true</failsOnError>
 							<linkXRef>false</linkXRef>
 						</configuration>
 						<goals>
@@ -401,7 +408,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<configuration>
-					<configLocation>${basedir}/src/test/resources/checkstyle.xml</configLocation>
+					<configLocation>${style.check}</configLocation>
 				</configuration>
 			</plugin>
 			<plugin>

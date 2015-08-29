@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.runner;
 
 /**
@@ -28,15 +29,17 @@ package com.agilarity.osmo.runner;
  */
 public class OsmoTestException extends RuntimeException {
 
-	/**
-	 * Support serialization.
-	 */
-	private static final long serialVersionUID = 1L;
+  /**
+   * Support serialization.
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param message Requirements coverage message
-	 */
-	public OsmoTestException(final String message) {
-		super(message);
-	}
+  /**
+   * Create message.
+   *
+   * @param message Requirements coverage message
+   */
+  public OsmoTestException(final String message) {
+    super(message);
+  }
 }

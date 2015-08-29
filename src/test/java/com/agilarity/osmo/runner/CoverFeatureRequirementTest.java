@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.runner;
 
 import static com.agilarity.osmo.runner.ConfigurationBuilder.createConfiguration;
@@ -33,19 +34,19 @@ import osmo.tester.annotation.TestStep;
 import com.agilarity.osmo.feature.models.AbstractTestFeature;
 
 public class CoverFeatureRequirementTest {
-	@Test
-	public void shouldRequireCoverage() {
-		final TestFeature model = new TestFeature();
-		final OSMOConfiguration configuration = createConfiguration(model);
-		final OsmoTestRunner runner = new OsmoTestRunner(configuration);
-		runner.generateTest();
-	}
+  @Test
+  public void shouldRequireCoverage() {
+    final TestFeature model = new TestFeature();
+    final OSMOConfiguration configuration = createConfiguration(model);
+    final OsmoTestRunner runner = new OsmoTestRunner(configuration);
+    runner.generateTest();
+  }
 
-	public class TestFeature extends AbstractTestFeature {
+  public class TestFeature extends AbstractTestFeature {
 
-		@TestStep
-		public void doWork() {
-			coverRequirement();
-		}
-	}
+    @TestStep
+    public void doWork() {
+      coverRequirement();
+    }
+  }
 }

@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.feature;
 
 import static java.lang.String.format;
@@ -41,84 +42,89 @@ import com.agilarity.osmo.runner.OsmoTestException;
  * @param S Test state is used to track the state of the system under test
  */
 public abstract class Feature<D, S> { // NOPMD
-	private static final int EXPECTED_STEPS = 1;
-	private static final String ONE_STEP = "Expected [1] @TestStep annotation in %s but got [%s]"; // NOCS
-	private final String requirement;
-	protected final Requirements requirements; // NOCS NOPMD
-	protected final D driver; // NOCS NOPMD
-	protected final S state; // NOCS NOPMD
+  private static final int EXPECTED_STEPS = 1;
+  private static final String ONE_STEP = "Expected [1] @TestStep annotation in %s but got [%s]"; // NOCS
+  private final String requirement;
+  protected final Requirements requirements; // NOCS NOPMD
+  protected final D driver; // NOCS NOPMD
+  protected final S state; // NOCS NOPMD
 
-	/**
-	 * @param requirements The requirements
-	 * @param driver Test driver is the facade to the system under test
-	 * @param state Test state is used to track the state of the system under
-	 *        test
-	 */
-	public Feature(final Requirements requirements, final D driver, final S state) {
-		this.requirements = requirements;
-		this.driver = driver;
-		this.state = state;
+  /**
+   * Initialize feature fields.
+   *
+   * @param requirements The requirements
+   * @param driver Test driver is the facade to the system under test
+   * @param state Test state is used to track the state of the system under test
+   */
+  public Feature(final Requirements requirements, final D driver, final S state) {
+    this.requirements = requirements;
+    this.driver = driver;
+    this.state = state;
 
-		requirement = findStepName();
+    requirement = findStepName();
 
-		if (!this.requirements.getRequirements().contains(requirement)) {
-			requirements.add(requirement);
-		}
-	}
+    if (!this.requirements.getRequirements().contains(requirement)) {
+      requirements.add(requirement);
+    }
+  }
 
-	/**
-	 * @return Requirements
-	 */
-	public Requirements getRequirements() {
-		return requirements;
-	}
+  /**
+   * Get OSMO requirements objects.
+   *
+   * @return Requirements
+   */
+  public Requirements getRequirements() {
+    return requirements;
+  }
 
-	/**
-	 * @return Requirement name
-	 */
-	public String getRequirement() {
-		return requirement;
-	}
+  /**
+   * Get the requirement name.
+   * 
+   * @return Requirement name
+   */
+  public String getRequirement() {
+    return requirement;
+  }
 
-	/**
-	 * Cover the requirement for this feature.
-	 */
-	protected void coverRequirement() {
-		requirements.covered(requirement);
-	}
+  /**
+   * Cover the requirement for this feature.
+   */
+  protected void coverRequirement() {
+    requirements.covered(requirement);
+  }
 
-	private String findStepName() {
-		final Method method = findTestStepMethod();
-		final TestStep annotation = method.getAnnotation(TestStep.class);
-		if (annotation.value().isEmpty()) {
-			return method.getName();
-		} else {
-			return annotation.value();
-		}
-	}
+  private String findStepName() {
+    final Method method = findTestStepMethod();
+    final TestStep annotation = method.getAnnotation(TestStep.class);
+    if (annotation.value().isEmpty()) {
+      return method.getName();
+    } else {
+      return annotation.value();
+    }
+  }
 
-	private Method findTestStepMethod() {
-		final List<Method> testSteps = findTestSteps();
-		requireExactlyOneTestStep(testSteps);
-		return testSteps.get(0);
-	}
+  private Method findTestStepMethod() {
+    final List<Method> testSteps = findTestSteps();
+    requireExactlyOneTestStep(testSteps);
+    return testSteps.get(0);
+  }
 
-	private List<Method> findTestSteps() { // NOPMD
-		final List<Method> testSteps = new ArrayList<Method>();
-		final Method[] methods = getClass().getDeclaredMethods();
-		for (final Method method : methods) {
-			final TestStep annotation = method.getAnnotation(TestStep.class);
-			if (annotation != null) {
-				testSteps.add(method);
-			}
-		}
-		return testSteps;
-	}
+  private List<Method> findTestSteps() { // NOPMD
+    final List<Method> testSteps = new ArrayList<Method>();
+    final Method[] methods = getClass().getDeclaredMethods();
+    for (final Method method : methods) {
+      final TestStep annotation = method.getAnnotation(TestStep.class);
+      if (annotation != null) {
+        testSteps.add(method);
+      }
+    }
+    return testSteps;
+  }
 
-	private void requireExactlyOneTestStep(final List<Method> testSteps) {
-		if (testSteps.size() != EXPECTED_STEPS) {
-			final String error = format(ONE_STEP, getClass().getSimpleName(), testSteps.size());
-			throw new OsmoTestException(error);
-		}
-	}
+  private void requireExactlyOneTestStep(final List<Method> testSteps) {
+    if (testSteps.size() != EXPECTED_STEPS) {
+      final String error = format(ONE_STEP, getClass().getSimpleName(), testSteps.size());
+      throw new OsmoTestException(error);
+    }
+  }
 }

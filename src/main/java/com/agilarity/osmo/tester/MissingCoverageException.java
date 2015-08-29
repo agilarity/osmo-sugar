@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.tester;
 
 import java.util.Collection;
@@ -30,15 +31,17 @@ import java.util.Collection;
  */
 public class MissingCoverageException extends RuntimeException {
 
-	/**
-	 * Support serialization.
-	 */
-	private static final long serialVersionUID = 1L;
+  /**
+   * Support serialization.
+   */
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param message Requirements coverage message
-	 */
-	public MissingCoverageException(final Collection<String> missingCoverage) {
-		super("Not covered " + missingCoverage.toString());
-	}
+  /**
+   * Build message from missing coverage.
+   *
+   * @param message Requirements coverage message
+   */
+  public MissingCoverageException(final Collection<String> missingCoverage) {
+    super("Not covered " + missingCoverage.toString());
+  }
 }

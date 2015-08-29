@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.feature;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,39 +35,39 @@ import osmo.tester.model.Requirements;
 import com.agilarity.osmo.feature.models.AbstractTestFeature;
 
 public class AddRequirementTest {
-	private Requirements requirements;
+  private Requirements requirements;
 
-	@BeforeTest
-	public void beforeTest() {
-		requirements = new Requirements();
-	}
+  @BeforeTest
+  public void beforeTest() {
+    requirements = new Requirements();
+  }
 
-	@Test
-	public void shouldAddRequirement() {
-		final SimpleFeature feature = createFeature();
+  @Test
+  public void shouldAddRequirement() {
+    final SimpleFeature feature = createFeature();
 
-		assertThat(feature.getRequirements().getRequirements().contains(feature.getRequirement()))
-				.isTrue();
-	}
+    assertThat(feature.getRequirements().getRequirements().contains(feature.getRequirement()))
+        .isTrue();
+  }
 
-	@Test
-	public void shouldOnlyAddRequirementOnce() {
-		createFeature();
-		createFeature();
-	}
+  @Test
+  public void shouldOnlyAddRequirementOnce() {
+    createFeature();
+    createFeature();
+  }
 
-	public class SimpleFeature extends AbstractTestFeature {
+  public class SimpleFeature extends AbstractTestFeature {
 
-		public SimpleFeature(final Requirements requirements) {
-			super(requirements);
-		}
+    public SimpleFeature(final Requirements requirements) {
+      super(requirements);
+    }
 
-		@TestStep()
-		public void doNothing() {
-		}
-	}
+    @TestStep()
+    public void doNothing() {
+    }
+  }
 
-	private SimpleFeature createFeature() {
-		return new SimpleFeature(requirements);
-	}
+  private SimpleFeature createFeature() {
+    return new SimpleFeature(requirements);
+  }
 }

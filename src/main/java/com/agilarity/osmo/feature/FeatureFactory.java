@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+
 package com.agilarity.osmo.feature;
 
 import osmo.tester.model.ModelFactory;
@@ -34,19 +35,21 @@ import osmo.tester.model.Requirements;
  */
 public abstract class FeatureFactory<D, S> implements ModelFactory { // NOPMD
 
-	protected final Requirements requirements; // NOCS NOPMD
-	protected final D driver; // NOCS NOPMD
-	protected final S state; // NOCS NOPMD
+  protected final Requirements requirements; // NOCS NOPMD
+  protected final D driver; // NOCS NOPMD
+  protected final S state; // NOCS NOPMD
 
-	/**
-	 * @param requirements the Requirements
-	 * @param driver the System driver
-	 * @param state the Test state
-	 */
-	public FeatureFactory(final Requirements requirements, final D driver, final S state) {
-		super();
-		this.requirements = requirements;
-		this.driver = driver;
-		this.state = state;
-	}
+  /**
+   * Initialize fields.
+   *
+   * @param requirements the Requirements
+   * @param driver the System driver
+   * @param state the Test state
+   */
+  public FeatureFactory(final Requirements requirements, final D driver, final S state) {
+    super();
+    this.requirements = requirements;
+    this.driver = driver;
+    this.state = state;
+  }
 }
