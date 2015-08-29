@@ -82,6 +82,8 @@ public class RequirementsListenerTest {
   }
 
   public class NoRequirementAnnotations {
+    // The requirements are used by RequirementAnnotationListener, not the model directly.
+    @SuppressWarnings("unused")
     private final Requirements requirements;
 
     public NoRequirementAnnotations(final Requirements requirements) {
