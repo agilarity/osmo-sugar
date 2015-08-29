@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example;
+package com.agilarity.osmo.example.detector;
 
 public class SmokeDetectorState {
   private int level;

@@ -22,28 +22,33 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example.model;
+package com.agilarity.osmo.example.detector.model;
 
+import static com.agilarity.osmo.example.detector.impl.SafetyStatus.SAFE;
+import static org.assertj.core.api.Assertions.assertThat;
 import osmo.tester.annotation.Guard;
 import osmo.tester.annotation.TestStep;
+import osmo.tester.model.Requirements;
 
-import com.agilarity.osmo.example.SmokeDetectorState;
+import com.agilarity.osmo.example.detector.SmokeDetectorState;
+import com.agilarity.osmo.example.detector.impl.SmokeDetector;
+import com.agilarity.osmo.feature.Feature;
 
-public class RemoveSmoke {
-  private final SmokeDetectorState state;
+public class AssertSafe extends Feature<SmokeDetector, SmokeDetectorState> {
 
-  public RemoveSmoke(final SmokeDetectorState state) {
-    super();
-    this.state = state;
+  public AssertSafe(final Requirements requirements, final SmokeDetector driver,
+      final SmokeDetectorState state) {
+    super(requirements, driver, state);
   }
 
   @Guard
-  public boolean guardDecrementSmokeLevel() {
-    return state.getLevel() > 0;
+  public boolean guardDetectSafeStatus() {
+    return state.getLevel() < 6;
   }
 
   @TestStep
-  public void decrementSmokeLevel() {
-    state.decrement();
+  public void detectSafeStatus() {
+    assertThat(driver.detect(state.getLevel())).isEqualTo(SAFE);
+    coverRequirement();
   }
 }

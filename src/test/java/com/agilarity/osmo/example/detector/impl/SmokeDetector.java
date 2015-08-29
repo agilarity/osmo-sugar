@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2015 Joseph A. Cruz
+ * Copyright (c) 2014 Joseph A. Cruz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,33 +22,24 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example.model;
+package com.agilarity.osmo.example.detector.impl;
 
-import static com.agilarity.osmo.example.detector.SafetyStatus.WARNING;
-import static org.assertj.core.api.Assertions.assertThat;
-import osmo.tester.annotation.Guard;
-import osmo.tester.annotation.TestStep;
-import osmo.tester.model.Requirements;
+import static com.agilarity.osmo.example.detector.impl.SafetyStatus.EMERGENCY;
+import static com.agilarity.osmo.example.detector.impl.SafetyStatus.SAFE;
+import static com.agilarity.osmo.example.detector.impl.SafetyStatus.WARNING;
 
-import com.agilarity.osmo.example.SmokeDetectorState;
-import com.agilarity.osmo.example.detector.SmokeDetector;
-import com.agilarity.osmo.feature.Feature;
+public class SmokeDetector {
 
-public class AssertWarning extends Feature<SmokeDetector, SmokeDetectorState> {
+  private static final int MAX_WARNING = 14;
+  private static final int MAX_SAFE = 6;
 
-  public AssertWarning(final Requirements requirements, final SmokeDetector driver,
-      final SmokeDetectorState state) {
-    super(requirements, driver, state);
-  }
-
-  @Guard
-  public boolean guardDetectWarningStatus() {
-    return state.getLevel() > 6 && state.getLevel() < 14;
-  }
-
-  @TestStep
-  public void detectWarningStatus() {
-    assertThat(driver.detect(state.getLevel())).isEqualTo(WARNING);
-    coverRequirement();
+  public SafetyStatus detect(final int level) {
+    if (level < MAX_SAFE) {
+      return SAFE;
+    } else if (level < MAX_WARNING) {
+      return WARNING;
+    } else {
+      return EMERGENCY;
+    }
   }
 }

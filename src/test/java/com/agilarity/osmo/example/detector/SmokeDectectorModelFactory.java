@@ -22,17 +22,17 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example;
+package com.agilarity.osmo.example.detector;
 
 import osmo.tester.model.Requirements;
 import osmo.tester.model.TestModels;
 
-import com.agilarity.osmo.example.detector.SmokeDetector;
-import com.agilarity.osmo.example.model.AddSmoke;
-import com.agilarity.osmo.example.model.AssertEmergency;
-import com.agilarity.osmo.example.model.AssertSafe;
-import com.agilarity.osmo.example.model.AssertWarning;
-import com.agilarity.osmo.example.model.RemoveSmoke;
+import com.agilarity.osmo.example.detector.impl.SmokeDetector;
+import com.agilarity.osmo.example.detector.model.AddSmoke;
+import com.agilarity.osmo.example.detector.model.AssertEmergency;
+import com.agilarity.osmo.example.detector.model.AssertSafe;
+import com.agilarity.osmo.example.detector.model.AssertWarning;
+import com.agilarity.osmo.example.detector.model.RemoveSmoke;
 import com.agilarity.osmo.feature.FeatureFactory;
 
 public class SmokeDectectorModelFactory extends FeatureFactory<SmokeDetector, SmokeDetectorState> {

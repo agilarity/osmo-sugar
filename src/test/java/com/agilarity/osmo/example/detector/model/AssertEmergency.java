@@ -22,33 +22,33 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example.model;
+package com.agilarity.osmo.example.detector.model;
 
-import static com.agilarity.osmo.example.detector.SafetyStatus.SAFE;
+import static com.agilarity.osmo.example.detector.impl.SafetyStatus.EMERGENCY;
 import static org.assertj.core.api.Assertions.assertThat;
 import osmo.tester.annotation.Guard;
 import osmo.tester.annotation.TestStep;
 import osmo.tester.model.Requirements;
 
-import com.agilarity.osmo.example.SmokeDetectorState;
-import com.agilarity.osmo.example.detector.SmokeDetector;
+import com.agilarity.osmo.example.detector.SmokeDetectorState;
+import com.agilarity.osmo.example.detector.impl.SmokeDetector;
 import com.agilarity.osmo.feature.Feature;
 
-public class AssertSafe extends Feature<SmokeDetector, SmokeDetectorState> {
+public class AssertEmergency extends Feature<SmokeDetector, SmokeDetectorState> {
 
-  public AssertSafe(final Requirements requirements, final SmokeDetector driver,
+  public AssertEmergency(final Requirements requirements, final SmokeDetector driver,
       final SmokeDetectorState state) {
     super(requirements, driver, state);
   }
 
   @Guard
-  public boolean guardDetectSafeStatus() {
-    return state.getLevel() < 6;
+  public boolean guardDetectEmergencyStatus() {
+    return state.getLevel() > 14;
   }
 
   @TestStep
-  public void detectSafeStatus() {
-    assertThat(driver.detect(state.getLevel())).isEqualTo(SAFE);
+  public void detectEmergencyStatus() {
+    assertThat(driver.detect(state.getLevel())).isEqualTo(EMERGENCY);
     coverRequirement();
   }
 }

@@ -1,7 +1,7 @@
 /*
  * The MIT License (MIT)
  *
- * Copyright (c) 2014 Joseph A. Cruz
+ * Copyright (c) 2015 Joseph A. Cruz
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,24 +22,22 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example.detector;
+package com.agilarity.osmo.example.detector.model;
 
-import static com.agilarity.osmo.example.detector.SafetyStatus.EMERGENCY;
-import static com.agilarity.osmo.example.detector.SafetyStatus.SAFE;
-import static com.agilarity.osmo.example.detector.SafetyStatus.WARNING;
+import osmo.tester.annotation.TestStep;
 
-public class SmokeDetector {
+import com.agilarity.osmo.example.detector.SmokeDetectorState;
 
-  private static final int MAX_WARNING = 14;
-  private static final int MAX_SAFE = 6;
+public class AddSmoke {
+  private final SmokeDetectorState state;
 
-  public SafetyStatus detect(final int level) {
-    if (level < MAX_SAFE) {
-      return SAFE;
-    } else if (level < MAX_WARNING) {
-      return WARNING;
-    } else {
-      return EMERGENCY;
-    }
+  public AddSmoke(final SmokeDetectorState state) {
+    super();
+    this.state = state;
+  }
+
+  @TestStep
+  public void incrementSmokeLevel() {
+    state.increment();
   }
 }

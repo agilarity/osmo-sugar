@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example.detector;
+package com.agilarity.osmo.example.detector.impl;
 
 public enum SafetyStatus {
   SAFE, WARNING, EMERGENCY;

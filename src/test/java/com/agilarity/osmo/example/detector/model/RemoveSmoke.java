@@ -22,38 +22,28 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example;
+package com.agilarity.osmo.example.detector.model;
 
-import org.testng.annotations.BeforeTest;
-import org.testng.annotations.Test;
+import osmo.tester.annotation.Guard;
+import osmo.tester.annotation.TestStep;
 
-import osmo.tester.OSMOConfiguration;
-import osmo.tester.generator.endcondition.Length;
-import osmo.tester.model.Requirements;
+import com.agilarity.osmo.example.detector.SmokeDetectorState;
 
-import com.agilarity.osmo.example.detector.SmokeDetector;
-import com.agilarity.osmo.runner.OsmoTestRunner;
+public class RemoveSmoke {
+  private final SmokeDetectorState state;
 
-public class SmokeDetectorTest {
-
-  private OsmoTestRunner runner;
-  private Requirements requirements;
-  private OSMOConfiguration configuration;
-
-  @BeforeTest
-  public void beforeTest() {
-    configuration = new OSMOConfiguration();
-    configuration.setSuiteEndCondition(new Length(1));
-    configuration.setTestEndCondition(new Length(400));
-
-    requirements = new Requirements();
-    configuration.setFactory(new SmokeDectectorModelFactory(requirements, new SmokeDetector(),
-        new SmokeDetectorState()));
-    runner = new OsmoTestRunner(configuration);
+  public RemoveSmoke(final SmokeDetectorState state) {
+    super();
+    this.state = state;
   }
 
-  @Test
-  public void shouldDetectSmokeLevels() {
-    runner.generateTest();
+  @Guard
+  public boolean guardDecrementSmokeLevel() {
+    return state.getLevel() > 0;
+  }
+
+  @TestStep
+  public void decrementSmokeLevel() {
+    state.decrement();
   }
 }

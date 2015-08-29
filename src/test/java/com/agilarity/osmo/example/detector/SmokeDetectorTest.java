@@ -22,33 +22,38 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.example.model;
+package com.agilarity.osmo.example.detector;
 
-import static com.agilarity.osmo.example.detector.SafetyStatus.EMERGENCY;
-import static org.assertj.core.api.Assertions.assertThat;
-import osmo.tester.annotation.Guard;
-import osmo.tester.annotation.TestStep;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
+
+import osmo.tester.OSMOConfiguration;
+import osmo.tester.generator.endcondition.Length;
 import osmo.tester.model.Requirements;
 
-import com.agilarity.osmo.example.SmokeDetectorState;
-import com.agilarity.osmo.example.detector.SmokeDetector;
-import com.agilarity.osmo.feature.Feature;
+import com.agilarity.osmo.example.detector.impl.SmokeDetector;
+import com.agilarity.osmo.runner.OsmoTestRunner;
 
-public class AssertEmergency extends Feature<SmokeDetector, SmokeDetectorState> {
+public class SmokeDetectorTest {
 
-  public AssertEmergency(final Requirements requirements, final SmokeDetector driver,
-      final SmokeDetectorState state) {
-    super(requirements, driver, state);
+  private OsmoTestRunner runner;
+  private Requirements requirements;
+  private OSMOConfiguration configuration;
+
+  @BeforeTest
+  public void beforeTest() {
+    configuration = new OSMOConfiguration();
+    configuration.setSuiteEndCondition(new Length(1));
+    configuration.setTestEndCondition(new Length(400));
+
+    requirements = new Requirements();
+    configuration.setFactory(new SmokeDectectorModelFactory(requirements, new SmokeDetector(),
+        new SmokeDetectorState()));
+    runner = new OsmoTestRunner(configuration);
   }
 
-  @Guard
-  public boolean guardDetectEmergencyStatus() {
-    return state.getLevel() > 14;
-  }
-
-  @TestStep
-  public void detectEmergencyStatus() {
-    assertThat(driver.detect(state.getLevel())).isEqualTo(EMERGENCY);
-    coverRequirement();
+  @Test
+  public void shouldDetectSmokeLevels() {
+    runner.generateTest();
   }
 }
