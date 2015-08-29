@@ -27,6 +27,7 @@ package com.agilarity.osmo.tester;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import osmo.tester.annotation.TestStep;
@@ -35,10 +36,14 @@ import osmo.tester.model.Requirements;
 public class RequirementEnforcingOsmoTesterTest {
   private RequirementEnforcingOsmoTester tester;
 
+  @BeforeMethod
+  public void createUnitUnderTest() {
+    tester = new RequirementEnforcingOsmoTester();
+  }
+
   @Test
   public void shouldPassWithoutRequirementsObject() {
     // GIVEN a model without a requirements object
-    tester = new RequirementEnforcingOsmoTester();
     tester.addModelObject(new SimpleModel());
 
     // WHEN the tests are generated
@@ -50,7 +55,6 @@ public class RequirementEnforcingOsmoTesterTest {
   @Test
   public void shouldPassWithoutRequirements() {
     // GIVEN no requirements are added
-    tester = new RequirementEnforcingOsmoTester();
     tester.addModelObject(new EmptyRequirementsModel(new Requirements()));
 
     // WHEN the tests are generated
@@ -74,7 +78,6 @@ public class RequirementEnforcingOsmoTesterTest {
   @Test
   public void shouldFailWithMissingCoverage() {
     // GIVEN a model with requirements
-    tester = new RequirementEnforcingOsmoTester();
     tester.addModelObject(new MissingCoverageModel(new Requirements()));
 
     // WHEN the tests are generated
@@ -91,7 +94,6 @@ public class RequirementEnforcingOsmoTesterTest {
   @Test
   public void shouldReportMissingCoverage() {
     // GIVEN a model with requirements
-    tester = new RequirementEnforcingOsmoTester();
     tester.addModelObject(new RequirementsModel(new Requirements()));
 
     // WHEN the tests are generated
