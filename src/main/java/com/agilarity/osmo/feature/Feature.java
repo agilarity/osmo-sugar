@@ -35,6 +35,7 @@ import osmo.tester.model.Requirements;
 
 import com.agilarity.osmo.runner.OsmoTestException;
 
+@Deprecated
 /**
  * Responsible for defining a feature model.
  *
@@ -79,7 +80,7 @@ public abstract class Feature<D, S> { // NOPMD
 
   /**
    * Get the requirement name.
-   * 
+   *
    * @return Requirement name
    */
   public String getRequirement() {

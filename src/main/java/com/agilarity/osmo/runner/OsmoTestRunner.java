@@ -30,6 +30,7 @@ import osmo.tester.OSMOConfiguration;
 import osmo.tester.OSMOTester;
 import osmo.tester.model.Requirements;
 
+@Deprecated
 /**
  * Responsible for running OSMO tests.
  */

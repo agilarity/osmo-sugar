@@ -24,6 +24,7 @@
 
 package com.agilarity.osmo.runner;
 
+@Deprecated
 /**
  * Report requirement coverage errors.
  */

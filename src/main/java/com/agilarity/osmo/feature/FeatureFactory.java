@@ -27,6 +27,7 @@ package com.agilarity.osmo.feature;
 import osmo.tester.model.ModelFactory;
 import osmo.tester.model.Requirements;
 
+@Deprecated
 /**
  * Responsible for defining a feature model factory.
  *
