@@ -39,7 +39,7 @@ public class MissingCoverageException extends RuntimeException {
   /**
    * Build message from missing coverage.
    *
-   * @param message Requirements coverage message
+   * @param missingCoverage The requirements that were not covered
    */
   public MissingCoverageException(final Collection<String> missingCoverage) {
     super("Not covered " + missingCoverage.toString());
