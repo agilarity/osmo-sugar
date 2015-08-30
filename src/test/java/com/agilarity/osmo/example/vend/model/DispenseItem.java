@@ -42,19 +42,15 @@ public class DispenseItem extends VendingmachineModel {
     vendingMachine.dispense();
   }
 
-  @Post
-  public void shouldDispenseItem() {
-    shouldReductInventory();
-    shouldSpendCash();
-  }
-
   @Requirement
+  @Post("dispenseItem")
   public void shouldSpendCash() {
     assertThat(vendingMachine.getCash()).isEqualTo(cashBeforeDispense - vendingMachine.getPrice());
   }
 
   @Requirement
-  public void shouldReductInventory() {
+  @Post("dispenseItem")
+  public void shouldReduceInventory() {
     assertThat(vendingMachine.getItems()).isEqualTo(--itemsBeforeDispense);
   }
 }
