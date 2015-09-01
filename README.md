@@ -13,7 +13,7 @@ OSMO Sugar provides support for model based testing with Teemu Kanstrén's [OSMO
 <dependency>
     <groupId>com.agilarity</groupId>
     <artifactId>osmo-sugar</artifactId>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 </dependency>
 ```
 2. Write single step models that cover the user actions under test. Add a <code>Requirements</code> field to the model so that OSMO knows you want to track requirements.
