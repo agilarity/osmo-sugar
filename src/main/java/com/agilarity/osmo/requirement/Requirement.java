@@ -1,4 +1,3 @@
-
 package com.agilarity.osmo.requirement;
 
 import java.lang.annotation.ElementType;
@@ -12,5 +11,10 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Requirement {
+  public static final String DEFAULT_VALUE = "";
 
+  /**
+   * Specifies the step that covers the requirement.
+   */
+  String value() default DEFAULT_VALUE;
 }

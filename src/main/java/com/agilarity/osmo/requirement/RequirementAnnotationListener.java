@@ -1,10 +1,10 @@
-
 package com.agilarity.osmo.requirement;
 
 import static java.lang.String.format;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
+import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -13,7 +13,6 @@ import osmo.tester.OSMOConfiguration;
 import osmo.tester.generator.listener.AbstractListener;
 import osmo.tester.generator.testsuite.TestCaseStep;
 import osmo.tester.model.FSM;
-import osmo.tester.model.FSMTransition;
 import osmo.tester.model.Requirements;
 
 /**
@@ -30,8 +29,8 @@ public class RequirementAnnotationListener extends AbstractListener {
   public void init(final long seed, final FSM fsm, final OSMOConfiguration config) {
     requirements = fsm.getRequirements();
     stepRequirements = new ConcurrentHashMap<String, Collection<String>>();
-    loadStepRequirements(fsm);
-    stepRequirements.forEach((modelObjectName, name) -> addRequirements(name));
+    extractRequirements(fsm);
+    stepRequirements.forEach((stepName, name) -> addRequirements(name));
   }
 
   /**
@@ -45,32 +44,37 @@ public class RequirementAnnotationListener extends AbstractListener {
     }
   }
 
-  private void loadStepRequirements(final FSM fsm) {
+  private void extractRequirements(final FSM fsm) {
     fsm.getTransitions().forEach(
-        fsmTransition -> stepRequirements.put(
-            getModelObjectName(getModelObject(fsmTransition)),
-            fetchRequirementNames(getModelObject(fsmTransition),
-                getModelObjectName(getModelObject(fsmTransition)))));
+        transition -> stepRequirements.put(
+            transition.getName().toString(),
+            fetchRequirementNames(transition.getTransition().getModelObject(), transition.getName()
+                .toString())));
   }
 
-  private String getModelObjectName(final Object modelObject) {
-    return modelObject.getClass().getSimpleName();
+  private Collection<String> fetchRequirementNames(final Object model, final String step) {
+    return findAnnotatedMethods(model).stream().filter(method -> assertStep(method, step))
+        .map(method -> buildRequirement(method.getName(), step)).collect(toList());
   }
 
-  private Object getModelObject(final FSMTransition fsmTransition) {
-    return fsmTransition.getTransition().getModelObject();
+  private Collection<Method> findAnnotatedMethods(final Object model) {
+    return asList(model.getClass().getMethods()).stream()
+        .filter(method -> method.getAnnotation(Requirement.class) != null).collect(toList());
   }
 
-  private Collection<String> fetchRequirementNames(final Object modelObject,
-      final String modelObjectName) {
+  private boolean assertStep(final Method method, final String step) {
+    final Requirement annotation = method.getAnnotation(Requirement.class);
+    final String value = annotation.value();
 
-    return asList(modelObject.getClass().getMethods()).stream()
-        .filter(method -> method.getAnnotation(Requirement.class) != null)
-        .map(method -> buildRequirement(modelObjectName, method.getName())).collect(toList());
+    if (value.equalsIgnoreCase(step) || method.getName().endsWith(step)) {
+      return true;
+    } else {
+      throw new MissingRequirementStepException(method, step);
+    }
   }
 
-  private String buildRequirement(final String modelObjectName, final String requirementName) {
-    return format("%s.%s", modelObjectName, requirementName);
+  private String buildRequirement(final String method, final String step) {
+    return format("%s.%s", step, method);
   }
 
   private void addRequirements(final Collection<String> requirementNames) {
