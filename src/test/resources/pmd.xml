@@ -204,11 +204,13 @@
    <rule ref="rulesets/java/migrating.xml/AvoidEnumAsIdentifier"/>
    <rule ref="rulesets/java/migrating.xml/ByteInstantiation"/>
    <rule ref="rulesets/java/migrating.xml/IntegerInstantiation"/>
+   <!--
    <rule ref="rulesets/java/migrating.xml/JUnit4SuitesShouldUseSuiteAnnotation"/>
    <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseAfterAnnotation"/>
    <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseBeforeAnnotation"/>
    <rule ref="rulesets/java/migrating.xml/JUnit4TestShouldUseTestAnnotation"/>
    <rule ref="rulesets/java/migrating.xml/JUnitUseExpected"/>
+    -->
    <rule ref="rulesets/java/migrating.xml/LongInstantiation"/>
    <rule ref="rulesets/java/migrating.xml/ReplaceEnumerationWithIterator"/>
    <rule ref="rulesets/java/migrating.xml/ReplaceHashtableWithMap"/>

@@ -31,7 +31,9 @@ import static org.assertj.core.api.Assertions.fail;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import osmo.common.OSMOException;
 import osmo.tester.OSMOTester;
+import osmo.tester.annotation.Post;
 import osmo.tester.annotation.TestStep;
 import osmo.tester.model.Requirements;
 
@@ -69,6 +71,46 @@ public class RequirementsListenerTest {
 
     // THEN the requirements will be covered
     assertThat(requirements.getMissingCoverage()).isEmpty();
+  }
+
+  @Test
+  public void shouldUncoverStepRequirements() {
+    // GIVEN a model that fails in the step
+    osmoTester.addModelObject(new CoverAndFailStep(requirements));
+
+    // AND requirements are covered in the model
+
+    // WHEN the tests are generated
+    try {
+      osmoTester.generate(1);
+      fail("Expected OSMOException");
+    } catch (final OSMOException e) {
+      // THEN the requirements will be covered
+      assertThat(requirements.getMissingCoverage()).containsAll(
+          asList("CoverAndFailStep.shouldCoverAndFailStep",
+              "CoverAndFailStep.shouldAlsoCoverAndFailStep"));
+    }
+  }
+
+  @Test
+  public void shouldUncoverRequirement() {
+    // GIVEN a model that fails
+    osmoTester.addModelObject(new CoverAndFailTest(requirements));
+
+    // AND requirements are covered in the model
+
+    // WHEN the tests are generated
+    try {
+      osmoTester.generate(1);
+      fail("Expected OSMOException");
+    } catch (final OSMOException e) {
+      // THEN the requirements will be covered
+      assertThat(requirements.getMissingCoverage()).contains(
+          "CoverAndFailTest.shouldCoverAndFailTest");
+    }
+
+    assertThat(requirements.getFullCoverage()).contains(
+        "CoverAndFailTest.shouldStillCoverTestRequirement");
   }
 
   @Test
@@ -181,6 +223,56 @@ public class RequirementsListenerTest {
     @Requirement
     public void shouldNoRequiremensOject() {
 
+    }
+  }
+
+  public class CoverAndFailTest {
+    private final Requirements requirements;
+
+    public CoverAndFailTest(final Requirements requirements) {
+      super();
+      this.requirements = requirements;
+    }
+
+    @TestStep
+    public void coverAndFailTest() {
+      requirements.covered("CoverAndFailTest.shouldCoverAndFailTest");
+    }
+
+    @Post
+    @Requirement
+    public void shouldCoverAndFailTest() {
+      fail("Fail in a requirement method");
+    }
+
+    @Post("coverAndFailTest")
+    @Requirement("coverAndFailTest")
+    public void shouldStillCoverTestRequirement() {
+    }
+  }
+
+  public class CoverAndFailStep {
+    private final Requirements requirements;
+
+    public CoverAndFailStep(final Requirements requirements) {
+      super();
+      this.requirements = requirements;
+    }
+
+    @TestStep
+    public void coverAndFailStep() {
+      requirements.covered("CoverAndFailStep.shouldCoverAndFailStep");
+      fail("Fail in a step");
+    }
+
+    @Post
+    @Requirement
+    public void shouldCoverAndFailStep() {
+    }
+
+    @Post("coverAndFailStep")
+    @Requirement("coverAndFailStep")
+    public void shouldAlsoCoverAndFailStep() {
     }
   }
 }

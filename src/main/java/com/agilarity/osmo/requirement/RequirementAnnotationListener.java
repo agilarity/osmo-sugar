@@ -35,6 +35,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import osmo.tester.OSMOConfiguration;
 import osmo.tester.generator.listener.AbstractListener;
+import osmo.tester.generator.testsuite.TestCase;
 import osmo.tester.generator.testsuite.TestCaseStep;
 import osmo.tester.model.FSM;
 import osmo.tester.model.Requirements;
@@ -42,12 +43,13 @@ import osmo.tester.model.Requirements;
 /**
  * Add requirements from the test model and cover them on success.
  */
+@SuppressWarnings("PMD.TooManyMethods")
 public class RequirementAnnotationListener extends AbstractListener {
   private transient Requirements requirements;
   private transient ConcurrentMap<String, Collection<String>> stepRequirements;
 
   /**
-   * Register the requirements for a step. {@inheritDoc}
+   * Register the requirements for a step.
    */
   @Override
   public void init(final long seed, final FSM fsm, final OSMOConfiguration config) {
@@ -62,14 +64,49 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   /**
-   * Cover the requirements because the step did not fail. {@inheritDoc}
+   * Cover the requirements because the step did not fail.
    */
+  @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
   @Override
   public void step(final TestCaseStep step) {
     final Collection<String> requirementNames = stepRequirements.get(step.getName());
     if (requirementNames != null) {
       requirementNames.forEach(requirementName -> requirements.covered(requirementName));
     }
+  }
+
+  /**
+   * Uncover the failing requirement when known or all steps requirements otherwise.
+   */
+  @Override
+  public void testError(final TestCase test, final Throwable error) {
+    final String step = test.getCurrentStep().getName();
+
+    if (!uncoverFailingRequirement(step, error)) {
+      uncoverAllStepRequirements(step);
+    }
+  }
+
+  private void uncoverAllStepRequirements(final String step) {
+    requirements.getFullCoverage().removeAll(stepRequirements.get(step));
+  }
+
+  private boolean uncoverFailingRequirement(final String step, final Throwable error) {
+    final String requirement = buildRequirementFromError(step, error);
+    final Collection<String> requirementNames = stepRequirements.get(step);
+
+    if (requirementNames.contains(requirement)) {
+      requirements.getFullCoverage().removeAll(asList(requirement));
+      return true;
+    }
+
+    return false;
+  }
+
+  private String buildRequirementFromError(final String step, final Throwable error) {
+    final StackTraceElement throwingMethod = error.getStackTrace()[0];
+    final String method = throwingMethod.getMethodName();
+    return buildRequirement(method, step);
   }
 
   private void extractRequirements(final FSM fsm) {
