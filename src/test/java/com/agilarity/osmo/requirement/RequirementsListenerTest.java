@@ -100,6 +100,21 @@ public class RequirementsListenerTest {
     }
   }
 
+  @Test
+  public void shouldRequireRequirementsObject() {
+    // GIVEN a model without a requirements object
+    osmoTester.addModelObject(new NoRequiremensOject());
+
+    try {
+      // WHEN the tests are generated
+      osmoTester.generate(1);
+      fail("Expected MissingRequirementsObjectException");
+    } catch (final MissingRequirementsObjectException e) {
+      // THEN the missing requirements object error will be reported
+      assertThat(e.getMessage()).isEqualTo("At least one model must have a Requirements object.");
+    }
+  }
+
   public class DoSomething {
     @SuppressWarnings("unused")
     private final Requirements requirements;
@@ -153,6 +168,18 @@ public class RequirementsListenerTest {
 
     @Requirement
     public void doesNotMatchStep() {
+
+    }
+  }
+
+  public class NoRequiremensOject {
+
+    @TestStep
+    public void noRequiremensOject() {
+    }
+
+    @Requirement
+    public void shouldNoRequiremensOject() {
 
     }
   }

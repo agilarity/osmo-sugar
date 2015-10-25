@@ -52,6 +52,10 @@ public class RequirementAnnotationListener extends AbstractListener {
   @Override
   public void init(final long seed, final FSM fsm, final OSMOConfiguration config) {
     requirements = fsm.getRequirements();
+    if (requirements == null) {
+      throw new MissingRequirementsObjectException();
+    }
+
     stepRequirements = new ConcurrentHashMap<String, Collection<String>>();
     extractRequirements(fsm);
     stepRequirements.forEach((stepName, name) -> addRequirements(name));
