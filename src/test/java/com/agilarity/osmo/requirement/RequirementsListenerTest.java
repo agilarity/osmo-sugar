@@ -174,7 +174,7 @@ public class RequirementsListenerTest {
     public void shouldDoSomething() {
     }
 
-    @Requirement("doSomething")
+    @Requirement(step = "doSomething")
     public void shouldDoSomethingElse() {
     }
   }
@@ -246,7 +246,7 @@ public class RequirementsListenerTest {
     }
 
     @Post("coverAndFailTest")
-    @Requirement("coverAndFailTest")
+    @Requirement(step = "coverAndFailTest")
     public void shouldStillCoverTestRequirement() {
     }
   }
@@ -271,7 +271,7 @@ public class RequirementsListenerTest {
     }
 
     @Post("coverAndFailStep")
-    @Requirement("coverAndFailStep")
+    @Requirement(step = "coverAndFailStep")
     public void shouldAlsoCoverAndFailStep() {
     }
   }

@@ -129,7 +129,7 @@ public class RequirementAnnotationListener extends AbstractListener {
 
   private boolean assertStep(final Method method, final String step) {
     final Requirement annotation = method.getAnnotation(Requirement.class);
-    final String value = annotation.value();
+    final String value = annotation.step();
 
     if (value.equalsIgnoreCase(step) || method.getName().endsWith(step)) {
       return true;

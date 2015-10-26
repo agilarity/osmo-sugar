@@ -40,5 +40,5 @@ public @interface Requirement {
   /**
    * Specifies the step that covers the requirement.
    */
-  String value() default DEFAULT_VALUE;
+  String step() default DEFAULT_VALUE;
 }
