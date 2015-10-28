@@ -57,8 +57,7 @@ public class RequirementsListenerTest {
     osmoTester.generate(1);
 
     // THEN the there will be one requirement for each annotation
-    assertThat(requirements.getRequirements()).containsAll(
-        asList("DoSomething.shouldDoSomething", "DoSomething.shouldDoSomethingElse"));
+    assertThat(requirements.getRequirements()).containsAll(asList("R101", "shouldDoSomethingElse"));
   }
 
   @Test
@@ -87,8 +86,7 @@ public class RequirementsListenerTest {
     } catch (final OSMOException e) {
       // THEN the requirements will be covered
       assertThat(requirements.getMissingCoverage()).containsAll(
-          asList("CoverAndFailStep.shouldCoverAndFailStep",
-              "CoverAndFailStep.shouldAlsoCoverAndFailStep"));
+          asList("shouldCoverAndFailStep", "shouldAlsoCoverAndFailStep"));
     }
   }
 
@@ -105,12 +103,10 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the requirements will be covered
-      assertThat(requirements.getMissingCoverage()).contains(
-          "CoverAndFailTest.shouldCoverAndFailTest");
+      assertThat(requirements.getMissingCoverage()).contains("shouldCoverAndFailTest");
     }
 
-    assertThat(requirements.getFullCoverage()).contains(
-        "CoverAndFailTest.shouldStillCoverTestRequirement");
+    assertThat(requirements.getFullCoverage()).contains("shouldStillCoverTestRequirement");
   }
 
   @Test
@@ -136,9 +132,8 @@ public class RequirementsListenerTest {
       fail("Expected MissingRequirementStepException");
     } catch (final MissingRequirementStepException e) {
       // THEN the missing step error will be reported
-      assertThat(e.getMessage())
-          .isEqualTo(
-              "Add step [MyStep] to @Requirement or end of method for [NoRequirementStep.doesNotMatchStep]");
+      assertThat(e.getMessage()).isEqualTo(
+          "Add step to @Requirement or end of method for [NoRequirementStep.doesNotMatchStep]");
     }
   }
 
@@ -170,7 +165,7 @@ public class RequirementsListenerTest {
     public void doSomething() {
     }
 
-    @Requirement
+    @Requirement("R101")
     public void shouldDoSomething() {
     }
 

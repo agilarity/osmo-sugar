@@ -38,6 +38,11 @@ public @interface Requirement {
   public static final String DEFAULT_VALUE = "";
 
   /**
+   * Identifies the requirement.
+   */
+  String value() default DEFAULT_VALUE;
+
+  /**
    * Specifies the step that covers the requirement.
    */
   String step() default DEFAULT_VALUE;

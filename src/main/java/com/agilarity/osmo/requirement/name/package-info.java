@@ -21,28 +21,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-
-package com.agilarity.osmo.requirement;
-
-import static java.lang.String.format;
-
-import java.lang.reflect.Method;
-
 /**
- * Report missing step error.
+ * Provides requirement naming strategies.
  */
-public class MissingRequirementStepException extends RuntimeException {
 
-  /**
-   * Support serialization.
-   */
-  private static final long serialVersionUID = 1L;
-
-  /**
-   * Build message for method without a step reference.
-   */
-  public MissingRequirementStepException(final Method method) {
-    super(format("Add step to @Requirement or end of method for [%s.%s]", method
-        .getDeclaringClass().getSimpleName(), method.getName()));
-  }
-}
+package com.agilarity.osmo.requirement.name;

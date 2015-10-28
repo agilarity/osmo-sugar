@@ -24,12 +24,14 @@
 
 package com.agilarity.osmo.requirement;
 
-import static java.lang.String.format;
-import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -40,13 +42,32 @@ import osmo.tester.generator.testsuite.TestCaseStep;
 import osmo.tester.model.FSM;
 import osmo.tester.model.Requirements;
 
+import com.agilarity.osmo.requirement.name.RequirementNamingStrategy;
+import com.agilarity.osmo.requirement.name.SimpleRequirementNamingStrategy;
+
 /**
  * Add requirements from the test model and cover them on success.
  */
-@SuppressWarnings("PMD.TooManyMethods")
 public class RequirementAnnotationListener extends AbstractListener {
+  private final transient RequirementNamingStrategy requirementNamingStrategy;
   private transient Requirements requirements;
-  private transient ConcurrentMap<String, Collection<String>> stepRequirements;
+  private transient ConcurrentMap<String, Collection<AnnotatedRequirement>> stepRequirements;
+  private transient Deque<Method> danglingMethods;
+
+  /**
+   * Use the @{code RequirementNamingStrategy} by default.
+   */
+  public RequirementAnnotationListener() {
+    this(new SimpleRequirementNamingStrategy());
+  }
+
+  /**
+   * Inject the {@code RequirementNamingStrategy}.
+   */
+  public RequirementAnnotationListener(final RequirementNamingStrategy requirementNamingStrategy) {
+    super();
+    this.requirementNamingStrategy = requirementNamingStrategy;
+  }
 
   /**
    * Register the requirements for a step.
@@ -58,20 +79,57 @@ public class RequirementAnnotationListener extends AbstractListener {
       throw new MissingRequirementsObjectException();
     }
 
-    stepRequirements = new ConcurrentHashMap<String, Collection<String>>();
-    extractRequirements(fsm);
-    stepRequirements.forEach((stepName, name) -> addRequirements(name));
+    danglingMethods = new ArrayDeque<Method>();
+
+    stepRequirements = new ConcurrentHashMap<String, Collection<AnnotatedRequirement>>();
+    fsm.getTransitions().forEach(
+        fsmTransition -> addStepAnnotatedRequirements(fsmTransition.getName().toString(),
+            fsmTransition.getTransition().getModelObject()));
+
+    if (!danglingMethods.isEmpty()) {
+      throw new MissingRequirementStepException(danglingMethods.peek());
+    }
+  }
+
+  private void addStepAnnotatedRequirements(final String step, final Object modelObject) {
+    final List<AnnotatedRequirement> list = stream(modelObject.getClass().getMethods())
+        .filter(method -> isRequirementForStep(step, method))
+        .map(method -> createAnnotatedRequirement(step, method)).collect(toList());
+
+    list.forEach(requirement -> requirements.add(requirement.getName()));
+    stepRequirements.put(step, list);
+  }
+
+  private boolean isRequirementForStep(final String step, final Method method) {
+    if (method.getAnnotation(Requirement.class) != null) {
+      danglingMethods.push(method);
+      if (method.getAnnotation(Requirement.class).step().equalsIgnoreCase(step)
+          || method.getName().endsWith(step)) {
+        danglingMethods.pop();
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private AnnotatedRequirement createAnnotatedRequirement(final String step, final Method method) {
+    final AnnotatedRequirement annotatedRequirement = new AnnotatedRequirement(
+        requirementNamingStrategy, method.getAnnotation(Requirement.class).value(), step,
+        method.getName());
+
+    return annotatedRequirement;
   }
 
   /**
    * Cover the requirements because the step did not fail.
    */
-  @SuppressWarnings("PMD.JUnit4TestShouldUseTestAnnotation")
   @Override
   public void step(final TestCaseStep step) {
-    final Collection<String> requirementNames = stepRequirements.get(step.getName());
-    if (requirementNames != null) {
-      requirementNames.forEach(requirementName -> requirements.covered(requirementName));
+    final Collection<AnnotatedRequirement> annotatedRequirements = stepRequirements.get(step
+        .getName());
+    if (annotatedRequirements != null) {
+      annotatedRequirements.forEach(requirement -> requirements.covered(requirement.getName()));
     }
   }
 
@@ -88,61 +146,28 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   private void uncoverAllStepRequirements(final String step) {
-    requirements.getFullCoverage().removeAll(stepRequirements.get(step));
+    final List<String> list = stepRequirements.get(step).stream()
+        .map(requirement -> requirement.getName()).collect(toList());
+    requirements.getFullCoverage().removeAll(list);
   }
 
   private boolean uncoverFailingRequirement(final String step, final Throwable error) {
-    final String requirement = buildRequirementFromError(step, error);
-    final Collection<String> requirementNames = stepRequirements.get(step);
+    final String method = getThrowingMethod(error);
+    final List<String> name = stepRequirements.get(step).stream()
+        .filter(requirement -> requirement.getMethod().equals(method))
+        .map(AnnotatedRequirement::getName).collect(toList());
 
-    if (requirementNames.contains(requirement)) {
-      requirements.getFullCoverage().removeAll(asList(requirement));
-      return true;
+    if (name.isEmpty()) {
+      return false;
     }
 
-    return false;
+    // Use removeAll instead of remove to assure every reference to the name is removed.
+    requirements.getFullCoverage().removeAll(name);
+    return true;
   }
 
-  private String buildRequirementFromError(final String step, final Throwable error) {
+  private String getThrowingMethod(final Throwable error) {
     final StackTraceElement throwingMethod = error.getStackTrace()[0];
-    final String method = throwingMethod.getMethodName();
-    return buildRequirement(method, step);
-  }
-
-  private void extractRequirements(final FSM fsm) {
-    fsm.getTransitions().forEach(
-        transition -> stepRequirements.put(
-            transition.getName().toString(),
-            fetchRequirementNames(transition.getTransition().getModelObject(), transition.getName()
-                .toString())));
-  }
-
-  private Collection<String> fetchRequirementNames(final Object model, final String step) {
-    return findAnnotatedMethods(model).stream().filter(method -> assertStep(method, step))
-        .map(method -> buildRequirement(method.getName(), step)).collect(toList());
-  }
-
-  private Collection<Method> findAnnotatedMethods(final Object model) {
-    return asList(model.getClass().getMethods()).stream()
-        .filter(method -> method.getAnnotation(Requirement.class) != null).collect(toList());
-  }
-
-  private boolean assertStep(final Method method, final String step) {
-    final Requirement annotation = method.getAnnotation(Requirement.class);
-    final String value = annotation.step();
-
-    if (value.equalsIgnoreCase(step) || method.getName().endsWith(step)) {
-      return true;
-    } else {
-      throw new MissingRequirementStepException(method, step);
-    }
-  }
-
-  private String buildRequirement(final String method, final String step) {
-    return format("%s.%s", step, method);
-  }
-
-  private void addRequirements(final Collection<String> requirementNames) {
-    requirementNames.forEach(requirementName -> requirements.add(requirementName));
+    return throwingMethod.getMethodName();
   }
 }
