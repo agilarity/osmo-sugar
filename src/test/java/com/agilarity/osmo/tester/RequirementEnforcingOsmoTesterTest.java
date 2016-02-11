@@ -66,7 +66,6 @@ public class RequirementEnforcingOsmoTesterTest {
   @Test
   public void shouldPassWithCoverage() {
     // GIVEN a model with requirements
-    tester = new RequirementEnforcingOsmoTester();
     tester.addModelObject(new RequirementsModel(new Requirements()));
 
     // WHEN the tests are generated
@@ -87,17 +86,6 @@ public class RequirementEnforcingOsmoTesterTest {
     } catch (final MissingCoverageException e) {
       assertThat(e.getMessage()).isEqualTo("Not covered [R3, R4]");
     }
-
-    // THEN the tests will not fail because of missing coverage
-  }
-
-  @Test
-  public void shouldReportMissingCoverage() {
-    // GIVEN a model with requirements
-    tester.addModelObject(new RequirementsModel(new Requirements()));
-
-    // WHEN the tests are generated
-    tester.generate(1);
 
     // THEN the tests will not fail because of missing coverage
   }
