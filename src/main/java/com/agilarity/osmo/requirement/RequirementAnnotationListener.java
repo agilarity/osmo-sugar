@@ -125,7 +125,7 @@ public class RequirementAnnotationListener extends AbstractListener {
    * Cover the requirements because the step did not fail.
    */
   @Override
-  public void step(final TestCaseStep step) {
+  public void stepDone(final TestCaseStep step) {
     final Collection<AnnotatedRequirement> annotatedRequirements = stepRequirements.get(step
         .getName());
     if (annotatedRequirements != null) {
