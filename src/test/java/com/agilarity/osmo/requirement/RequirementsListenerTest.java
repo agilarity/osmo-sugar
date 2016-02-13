@@ -31,10 +31,15 @@ import static org.assertj.core.api.Assertions.fail;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.agilarity.osmo.requirement.model.CoverAndFailStep;
+import com.agilarity.osmo.requirement.model.CoverAndFailTest;
+import com.agilarity.osmo.requirement.model.DoSomething;
+import com.agilarity.osmo.requirement.model.NoRequiremensOject;
+import com.agilarity.osmo.requirement.model.NoRequirementAnnotations;
+import com.agilarity.osmo.requirement.model.NoRequirementStep;
+
 import osmo.common.OSMOException;
 import osmo.tester.OSMOTester;
-import osmo.tester.annotation.Post;
-import osmo.tester.annotation.TestStep;
 import osmo.tester.model.Requirements;
 
 public class RequirementsListenerTest {
@@ -149,125 +154,6 @@ public class RequirementsListenerTest {
     } catch (final MissingRequirementsObjectException e) {
       // THEN the missing requirements object error will be reported
       assertThat(e.getMessage()).isEqualTo("At least one model must have a Requirements object.");
-    }
-  }
-
-  public class DoSomething {
-    @SuppressWarnings("unused")
-    private final Requirements requirements;
-
-    public DoSomething(final Requirements requirements) {
-      super();
-      this.requirements = requirements;
-    }
-
-    @TestStep
-    public void doSomething() {
-    }
-
-    @Requirement("R101")
-    public void shouldDoSomething() {
-    }
-
-    @Requirement(step = "doSomething")
-    public void shouldDoSomethingElse() {
-    }
-  }
-
-  public class NoRequirementAnnotations {
-    // The requirements are used by RequirementAnnotationListener, not the model directly.
-    @SuppressWarnings("unused")
-    private final Requirements requirements;
-
-    public NoRequirementAnnotations(final Requirements requirements) {
-      super();
-      this.requirements = requirements;
-    }
-
-    @TestStep
-    public void doNotAssertAnything() {
-    }
-  }
-
-  public class NoRequirementStep {
-    // The requirements are used by RequirementAnnotationListener, not the model directly.
-    @SuppressWarnings("unused")
-    private final Requirements requirements;
-
-    public NoRequirementStep(final Requirements requirements) {
-      super();
-      this.requirements = requirements;
-    }
-
-    @TestStep
-    public void myStep() {
-    }
-
-    @Requirement
-    public void doesNotMatchStep() {
-
-    }
-  }
-
-  public class NoRequiremensOject {
-
-    @TestStep
-    public void noRequiremensOject() {
-    }
-
-    @Requirement
-    public void shouldNoRequiremensOject() {
-
-    }
-  }
-
-  public class CoverAndFailTest {
-    private final Requirements requirements;
-
-    public CoverAndFailTest(final Requirements requirements) {
-      super();
-      this.requirements = requirements;
-    }
-
-    @TestStep
-    public void coverAndFailTest() {
-      requirements.covered("CoverAndFailTest.shouldCoverAndFailTest");
-    }
-
-    @Post
-    @Requirement
-    public void shouldCoverAndFailTest() {
-      fail("Fail in a requirement method");
-    }
-
-    @Post("coverAndFailTest")
-    @Requirement(step = "coverAndFailTest")
-    public void shouldStillCoverTestRequirement() {
-    }
-  }
-
-  public class CoverAndFailStep {
-    private final Requirements requirements;
-
-    public CoverAndFailStep(final Requirements requirements) {
-      super();
-      this.requirements = requirements;
-    }
-
-    @TestStep
-    public void coverAndFailStep() {
-      requirements.covered("CoverAndFailStep.shouldCoverAndFailStep");
-      fail("Fail in a step");
-    }
-
-    @Post
-    @Requirement
-    public void shouldCoverAndFailStep() {
-    }
-
-    @Post("coverAndFailStep")
-    @Requirement(step = "coverAndFailStep")
-    public void shouldAlsoCoverAndFailStep() {
     }
   }
 }
