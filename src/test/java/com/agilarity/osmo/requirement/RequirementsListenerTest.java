@@ -71,6 +71,20 @@ public class RequirementsListenerTest {
   }
 
   @Test
+  public void shouldGetAnnotatedRequirements() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new DoSomething(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one annotated requirement for each annotation
+    List<String> names = listener.getAnnotatedRequirements().stream()
+        .map(AnnotatedRequirement::getName).collect(Collectors.toList());
+    assertThat(names).contains("R101", "shouldDoSomethingElse");
+  }
+
+  @Test
   public void shouldCoverRequirements() {
     // GIVEN a model with annotated requirements
     osmoTester.addModelObject(new DoSomething(requirements));
@@ -95,8 +109,8 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the requirements will be uncovered
-      assertThat(requirements.getMissingCoverage())
-          .containsAll(asList("shouldCoverAndFailStep", "shouldAlsoCoverAndFailStep"));
+      assertThat(requirements.getMissingCoverage()).containsAll(
+          asList("shouldCoverAndFailStep", "shouldAlsoCoverAndFailStep"));
     }
   }
 

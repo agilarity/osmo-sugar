@@ -58,6 +58,7 @@ public class RequirementAnnotationListener extends AbstractListener {
   private transient Deque<Method> danglingMethods;
   private transient AnnotatedRequirement failingRequirement;
   private transient Collection<AnnotatedRequirement> passingRequirements;
+  private transient Collection<AnnotatedRequirement> annotatedRequirements;
 
   /**
    * Use the @{code RequirementNamingStrategy} by default.
@@ -89,6 +90,13 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   /**
+   * @return the annotatedRequirements.
+   */
+  public Collection<AnnotatedRequirement> getAnnotatedRequirements() {
+    return annotatedRequirements;
+  }
+
+  /**
    * Register the requirements for a step.
    */
   @Override
@@ -112,12 +120,12 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   private void addStepAnnotatedRequirements(final String step, final Object modelObject) {
-    final List<AnnotatedRequirement> list = stream(modelObject.getClass().getMethods())
+    annotatedRequirements = stream(modelObject.getClass().getMethods())
         .filter(method -> isRequirementForStep(step, method))
         .map(method -> createAnnotatedRequirement(step, method)).collect(toList());
 
-    list.forEach(requirement -> requirements.add(requirement.getName()));
-    stepRequirements.put(step, list);
+    annotatedRequirements.forEach(requirement -> requirements.add(requirement.getName()));
+    stepRequirements.put(step, annotatedRequirements);
   }
 
   private boolean isRequirementForStep(final String step, final Method method) {
@@ -184,7 +192,7 @@ public class RequirementAnnotationListener extends AbstractListener {
     if (sourceOfError.isPresent()) {
       failingRequirement = sourceOfError.get();
       final List<String> nameAsList = Arrays.asList(failingRequirement.getName());
-      
+
       passingRequirements.remove(failingRequirement);
 
       // Use removeAll instead of remove to assure every reference to the name is removed.
