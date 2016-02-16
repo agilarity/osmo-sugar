@@ -43,6 +43,7 @@ import osmo.tester.OSMOTester;
 import osmo.tester.model.Requirements;
 
 public class RequirementsListenerTest {
+  private RequirementAnnotationListener listener;
   private Requirements requirements;
   private OSMOTester osmoTester;
 
@@ -50,7 +51,8 @@ public class RequirementsListenerTest {
   public void before() throws NoSuchMethodException, SecurityException {
     requirements = new Requirements();
     osmoTester = new OSMOTester();
-    osmoTester.addListener(new RequirementAnnotationListener());
+    listener = new RequirementAnnotationListener();
+    osmoTester.addListener(listener);
   }
 
   @Test
@@ -112,6 +114,21 @@ public class RequirementsListenerTest {
     }
 
     assertThat(requirements.getFullCoverage()).contains("shouldStillCoverTestRequirement");
+  }
+
+  @Test
+  public void shouldRememberFailingRequirement() {
+    // GIVEN a model that fails
+    osmoTester.addModelObject(new CoverAndFailTest(requirements));
+
+    // WHEN the tests are generated
+    try {
+      osmoTester.generate(1);
+      fail("Expected OSMOException");
+    } catch (final OSMOException e) {
+      // THEN the failing requirement will be remembered
+      assertThat(listener.getFailingRequirement().getMethod()).isEqualTo("shouldCoverAndFailTest");
+    }
   }
 
   @Test

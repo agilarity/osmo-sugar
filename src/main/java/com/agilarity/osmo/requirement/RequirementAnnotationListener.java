@@ -29,11 +29,16 @@ import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import com.agilarity.osmo.requirement.name.RequirementNamingStrategy;
+import com.agilarity.osmo.requirement.name.SimpleRequirementNamingStrategy;
 
 import osmo.tester.OSMOConfiguration;
 import osmo.tester.generator.listener.AbstractListener;
@@ -41,9 +46,6 @@ import osmo.tester.generator.testsuite.TestCase;
 import osmo.tester.generator.testsuite.TestCaseStep;
 import osmo.tester.model.FSM;
 import osmo.tester.model.Requirements;
-
-import com.agilarity.osmo.requirement.name.RequirementNamingStrategy;
-import com.agilarity.osmo.requirement.name.SimpleRequirementNamingStrategy;
 
 /**
  * Add requirements from the test model and cover them on success.
@@ -53,6 +55,7 @@ public class RequirementAnnotationListener extends AbstractListener {
   private transient Requirements requirements;
   private transient ConcurrentMap<String, Collection<AnnotatedRequirement>> stepRequirements;
   private transient Deque<Method> danglingMethods;
+  private transient AnnotatedRequirement failingRequirement;
 
   /**
    * Use the @{code RequirementNamingStrategy} by default.
@@ -67,6 +70,13 @@ public class RequirementAnnotationListener extends AbstractListener {
   public RequirementAnnotationListener(final RequirementNamingStrategy requirementNamingStrategy) {
     super();
     this.requirementNamingStrategy = requirementNamingStrategy;
+  }
+
+  /**
+   * @return the failingRequirement.
+   */
+  public AnnotatedRequirement getFailingRequirement() {
+    return failingRequirement;
   }
 
   /**
@@ -153,17 +163,20 @@ public class RequirementAnnotationListener extends AbstractListener {
 
   private boolean uncoverFailingRequirement(final String step, final Throwable error) {
     final String method = getThrowingMethod(error);
-    final List<String> name = stepRequirements.get(step).stream()
-        .filter(requirement -> requirement.getMethod().equals(method))
-        .map(AnnotatedRequirement::getName).collect(toList());
+    final Optional<AnnotatedRequirement> sourceOfError = stepRequirements.get(step).stream()
+        .filter(requirement -> requirement.getMethod().equals(method)).findFirst();
 
-    if (name.isEmpty()) {
-      return false;
+    if (sourceOfError.isPresent()) {
+      failingRequirement = sourceOfError.get();
+      final List<String> nameAsList = Arrays.asList(failingRequirement.getName());
+
+      // Use removeAll instead of remove to assure every reference to the name is removed.
+      requirements.getFullCoverage().removeAll(nameAsList);
+
+      return true;
     }
 
-    // Use removeAll instead of remove to assure every reference to the name is removed.
-    requirements.getFullCoverage().removeAll(name);
-    return true;
+    return false;
   }
 
   private String getThrowingMethod(final Throwable error) {
