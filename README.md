@@ -1,7 +1,7 @@
 [![Stories in Ready](https://badge.waffle.io/agilarity/osmo-sugar.png?label=ready&title=Ready)](https://waffle.io/agilarity/osmo-sugar)
 [![Build Status](https://travis-ci.org/agilarity/osmo-sugar.svg?branch=master)](https://travis-ci.org/agilarity/osmo-sugar)
 
-OSMO Sugar provides support for model based testing with Teemu Kanstrén's [OSMO Tester](https://code.google.com/p/osmo/).
+OSMO Sugar provides support for model based testing with Teemu Kanstrén's [OSMO Tester](https://github.com/mukatee/osmo).
 
 ###Sugar
 1. The <code>RequirementEnforcingOsmoTester</code> is a thin wrapper over <code>OSMOTester</code> that guarantees every requirement has been met.
@@ -13,7 +13,7 @@ OSMO Sugar provides support for model based testing with Teemu Kanstrén's [OSMO
 <dependency>
     <groupId>com.agilarity</groupId>
     <artifactId>osmo-sugar</artifactId>
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 2. Write single step models that cover the user actions under test. Add a <code>Requirements</code> field to the model so that OSMO knows you want to track requirements.
