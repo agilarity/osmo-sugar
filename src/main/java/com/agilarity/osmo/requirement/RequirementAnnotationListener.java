@@ -59,6 +59,8 @@ public class RequirementAnnotationListener extends AbstractListener {
   private transient AnnotatedRequirement failingRequirement;
   private transient Collection<AnnotatedRequirement> passingRequirements;
   private transient Collection<AnnotatedRequirement> annotatedRequirements;
+  private transient TestCase failingTestCase;
+  private transient Throwable error;
 
   /**
    * Use the @{code RequirementNamingStrategy} by default.
@@ -94,6 +96,20 @@ public class RequirementAnnotationListener extends AbstractListener {
    */
   public Collection<AnnotatedRequirement> getAnnotatedRequirements() {
     return annotatedRequirements;
+  }
+
+  /**
+   * @return the failing test case.
+   */
+  public TestCase getFailingTestCase() {
+    return failingTestCase;
+  }
+
+  /**
+   * @return the error.
+   */
+  public Throwable getError() {
+    return error;
   }
 
   /**
@@ -171,6 +187,8 @@ public class RequirementAnnotationListener extends AbstractListener {
    */
   @Override
   public void testError(final TestCase test, final Throwable error) {
+    this.error = error;
+    failingTestCase = test;
     final String step = test.getCurrentStep().getName();
 
     if (!uncoverFailingRequirement(step, error)) {

@@ -198,4 +198,35 @@ public class RequirementsListenerTest {
       assertThat(e.getMessage()).isEqualTo("At least one model must have a Requirements object.");
     }
   }
+
+  @Test
+  public void shouldRememberFailingTestCase() {
+    // GIVEN a model that fails in the step
+    osmoTester.addModelObject(new CoverAndFailStep(requirements));
+
+    // WHEN the tests are generated
+    try {
+      osmoTester.generate(1);
+      fail("Expected OSMOException");
+    } catch (final OSMOException e) {
+      // THEN the failing test case will be remembered
+      assertThat(listener.getFailingTestCase().getCurrentStep().getName()).isEqualTo(
+          "CoverAndFailStep");
+    }
+  }
+
+  @Test
+  public void shouldRememberError() {
+    // GIVEN a model that fails in the step
+    osmoTester.addModelObject(new CoverAndFailStep(requirements));
+
+    // WHEN the tests are generated
+    try {
+      osmoTester.generate(1);
+      fail("Expected OSMOException");
+    } catch (final OSMOException e) {
+      // THEN the error will be remembered
+      assertThat(listener.getError().getMessage()).isEqualTo("Fail in a step");
+    }
+  }
 }
