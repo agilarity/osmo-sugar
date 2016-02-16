@@ -28,6 +28,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
+import java.util.Optional;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -101,6 +103,8 @@ public class RequirementsListenerTest {
   public void shouldUncoverRequirement() {
     // GIVEN a model that fails
     osmoTester.addModelObject(new CoverAndFailTest(requirements));
+    String failingMethod = "shouldCoverAndFailTest";
+    String passingMethod = "shouldStillCoverTestRequirement";
 
     // AND requirements are covered in the model
 
@@ -110,25 +114,19 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the requirements will be covered
-      assertThat(requirements.getMissingCoverage()).contains("shouldCoverAndFailTest");
+      assertThat(requirements.getMissingCoverage()).contains(failingMethod);
+
+      // AND the failing requirement will be remembered
+      assertThat(listener.getFailingRequirement().getMethod()).isEqualTo(failingMethod);
     }
 
-    assertThat(requirements.getFullCoverage()).contains("shouldStillCoverTestRequirement");
-  }
+    // AND the passing requirement will still be covered
+    assertThat(requirements.getFullCoverage()).contains(passingMethod);
 
-  @Test
-  public void shouldRememberFailingRequirement() {
-    // GIVEN a model that fails
-    osmoTester.addModelObject(new CoverAndFailTest(requirements));
-
-    // WHEN the tests are generated
-    try {
-      osmoTester.generate(1);
-      fail("Expected OSMOException");
-    } catch (final OSMOException e) {
-      // THEN the failing requirement will be remembered
-      assertThat(listener.getFailingRequirement().getMethod()).isEqualTo("shouldCoverAndFailTest");
-    }
+    // AND the passing requirement will be remembered
+    Optional<AnnotatedRequirement> expected = listener.getPassingRequirements().stream()
+        .filter(requirement -> requirement.getMethod().equals(passingMethod)).findFirst();
+    assertThat(expected).isPresent();
   }
 
   @Test

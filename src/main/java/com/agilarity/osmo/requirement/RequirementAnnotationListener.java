@@ -29,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
@@ -56,6 +57,7 @@ public class RequirementAnnotationListener extends AbstractListener {
   private transient ConcurrentMap<String, Collection<AnnotatedRequirement>> stepRequirements;
   private transient Deque<Method> danglingMethods;
   private transient AnnotatedRequirement failingRequirement;
+  private transient Collection<AnnotatedRequirement> passingRequirements;
 
   /**
    * Use the @{code RequirementNamingStrategy} by default.
@@ -80,6 +82,13 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   /**
+   * @return the passingRequirements.
+   */
+  public Collection<AnnotatedRequirement> getPassingRequirements() {
+    return passingRequirements;
+  }
+
+  /**
    * Register the requirements for a step.
    */
   @Override
@@ -89,9 +98,10 @@ public class RequirementAnnotationListener extends AbstractListener {
       throw new MissingRequirementsObjectException();
     }
 
+    passingRequirements = new ArrayList<AnnotatedRequirement>();
+    stepRequirements = new ConcurrentHashMap<String, Collection<AnnotatedRequirement>>();
     danglingMethods = new ArrayDeque<Method>();
 
-    stepRequirements = new ConcurrentHashMap<String, Collection<AnnotatedRequirement>>();
     fsm.getTransitions().forEach(
         fsmTransition -> addStepAnnotatedRequirements(fsmTransition.getName().toString(),
             fsmTransition.getTransition().getModelObject()));
@@ -139,8 +149,13 @@ public class RequirementAnnotationListener extends AbstractListener {
     final Collection<AnnotatedRequirement> annotatedRequirements = stepRequirements.get(step
         .getName());
     if (annotatedRequirements != null) {
-      annotatedRequirements.forEach(requirement -> requirements.covered(requirement.getName()));
+      annotatedRequirements.forEach(requirement -> passRequirement(requirement));
     }
+  }
+
+  private void passRequirement(final AnnotatedRequirement requirement) {
+    requirements.covered(requirement.getName());
+    passingRequirements.add(requirement);
   }
 
   /**
