@@ -103,8 +103,6 @@ public class RequirementsListenerTest {
   public void shouldUncoverRequirement() {
     // GIVEN a model that fails
     osmoTester.addModelObject(new CoverAndFailTest(requirements));
-    String failingMethod = "shouldCoverAndFailTest";
-    String passingMethod = "shouldStillCoverTestRequirement";
 
     // AND requirements are covered in the model
 
@@ -113,19 +111,35 @@ public class RequirementsListenerTest {
       osmoTester.generate(1);
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
-      // THEN the requirements will be covered
-      assertThat(requirements.getMissingCoverage()).contains(failingMethod);
-
-      // AND the failing requirement will be remembered
-      assertThat(listener.getFailingRequirement().getMethod()).isEqualTo(failingMethod);
+      // THEN the requirements will be uncovered
+      assertThat(requirements.getMissingCoverage()).contains("shouldCoverAndFailTest");
     }
 
     // AND the passing requirement will still be covered
-    assertThat(requirements.getFullCoverage()).contains(passingMethod);
+    assertThat(requirements.getFullCoverage()).contains("shouldStillCoverTestRequirement");
+
+  }
+
+  @Test
+  public void shouldRemeberTestStatus() {
+    // GIVEN a model that fails
+    osmoTester.addModelObject(new CoverAndFailTest(requirements));
+
+    // AND requirements are covered in the model
+
+    // WHEN the tests are generated
+    try {
+      osmoTester.generate(1);
+      fail("Expected OSMOException");
+    } catch (final OSMOException e) {
+      // THEN the failing requirement will be remembered
+      assertThat(listener.getFailingRequirement().getMethod()).isEqualTo("shouldCoverAndFailTest");
+    }
 
     // AND the passing requirement will be remembered
     Optional<AnnotatedRequirement> expected = listener.getPassingRequirements().stream()
-        .filter(requirement -> requirement.getMethod().equals(passingMethod)).findFirst();
+        .filter(requirement -> requirement.getMethod().equals("shouldStillCoverTestRequirement"))
+        .findFirst();
     assertThat(expected).isPresent();
   }
 
