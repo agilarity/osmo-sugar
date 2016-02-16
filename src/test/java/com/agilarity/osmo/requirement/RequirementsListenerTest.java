@@ -28,7 +28,8 @@ import static java.util.Arrays.asList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -93,9 +94,9 @@ public class RequirementsListenerTest {
       osmoTester.generate(1);
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
-      // THEN the requirements will be covered
-      assertThat(requirements.getMissingCoverage()).containsAll(
-          asList("shouldCoverAndFailStep", "shouldAlsoCoverAndFailStep"));
+      // THEN the requirements will be uncovered
+      assertThat(requirements.getMissingCoverage())
+          .containsAll(asList("shouldCoverAndFailStep", "shouldAlsoCoverAndFailStep"));
     }
   }
 
@@ -117,7 +118,6 @@ public class RequirementsListenerTest {
 
     // AND the passing requirement will still be covered
     assertThat(requirements.getFullCoverage()).contains("shouldStillCoverTestRequirement");
-
   }
 
   @Test
@@ -136,11 +136,10 @@ public class RequirementsListenerTest {
       assertThat(listener.getFailingRequirement().getMethod()).isEqualTo("shouldCoverAndFailTest");
     }
 
-    // AND the passing requirement will be remembered
-    Optional<AnnotatedRequirement> expected = listener.getPassingRequirements().stream()
-        .filter(requirement -> requirement.getMethod().equals("shouldStillCoverTestRequirement"))
-        .findFirst();
-    assertThat(expected).isPresent();
+    // AND the passing requirements will be remembered
+    List<String> passingMethods = listener.getPassingRequirements().stream()
+        .map(AnnotatedRequirement::getMethod).collect(Collectors.toList());
+    assertThat(passingMethods).containsExactly("shouldStillCoverTestRequirement");
   }
 
   @Test

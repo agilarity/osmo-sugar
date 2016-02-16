@@ -184,6 +184,8 @@ public class RequirementAnnotationListener extends AbstractListener {
     if (sourceOfError.isPresent()) {
       failingRequirement = sourceOfError.get();
       final List<String> nameAsList = Arrays.asList(failingRequirement.getName());
+      
+      passingRequirements.remove(failingRequirement);
 
       // Use removeAll instead of remove to assure every reference to the name is removed.
       requirements.getFullCoverage().removeAll(nameAsList);
