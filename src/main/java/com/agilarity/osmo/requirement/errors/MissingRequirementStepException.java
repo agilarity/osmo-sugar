@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.requirement;
+package com.agilarity.osmo.requirement.errors;
 
 import static java.lang.String.format;
 

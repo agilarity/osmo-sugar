@@ -34,6 +34,8 @@ import java.util.stream.Collectors;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.agilarity.osmo.requirement.errors.MissingRequirementStepException;
+import com.agilarity.osmo.requirement.errors.MissingRequirementsObjectException;
 import com.agilarity.osmo.requirement.model.CoverAndFailStep;
 import com.agilarity.osmo.requirement.model.CoverAndFailTest;
 import com.agilarity.osmo.requirement.model.DoSomething;
