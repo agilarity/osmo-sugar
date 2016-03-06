@@ -10,32 +10,30 @@ import com.agilarity.osmo.requirement.errors.InvalidRequirementAnnotationExcepti
 /**
  * Provide reflective access to annotation properties.
  */
-public class AnnotationAccesor {
-  private final transient Annotation annotation;
+public final class AnnotationAccesor {
 
   /**
    * @param annotation The annotation.
    */
-  public AnnotationAccesor(final Annotation annotation) {
+  private AnnotationAccesor() {
     super();
-    this.annotation = annotation;
   }
 
   /**
    * @return The requirement identifier.
    */
-  public String value() {
-    return getString("value");
+  public static String getValue(final Annotation annotation) {
+    return getString(annotation, "value");
   }
 
   /**
    * @return The step name.
    */
-  public String step() {
-    return getString("step");
+  public static String getStep(final Annotation annotation) {
+    return getString(annotation, "step");
   }
 
-  private String getString(final String methodName) {
+  private static String getString(final Annotation annotation, final String methodName) {
     try {
       final Method method = annotation.getClass().getMethod(methodName);
       return (String) method.invoke(annotation);

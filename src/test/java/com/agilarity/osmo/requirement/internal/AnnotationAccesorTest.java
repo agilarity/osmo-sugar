@@ -1,46 +1,49 @@
 
 package com.agilarity.osmo.requirement.internal;
 
+import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getStep;
+import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getValue;
 import static java.lang.String.format;
+import static java.lang.reflect.Modifier.isPrivate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 
 import org.testng.annotations.Test;
 
 import com.agilarity.osmo.requirement.errors.InvalidRequirementAnnotationException;
 
 public class AnnotationAccesorTest {
-  private AnnotationAccesor accessor;
   private Annotation annotation;
 
   @Test
   public void shouldGetValue() throws NoSuchMethodException, SecurityException {
     // WHEN the annotation is valid
-    accessor = new AnnotationAccesor(getAnnotation("good", GoodRequirementAnnotation.class));
+    annotation = getAnnotation("good", GoodRequirementAnnotation.class);
 
     // THEN the value will match
-    assertThat(accessor.value()).isEqualTo("R1");
+    assertThat(getValue(annotation)).isEqualTo("R1");
   }
 
   @Test
   public void shouldGetStep() throws NoSuchMethodException, SecurityException {
     // WHEN the annotation is valid
-    accessor = new AnnotationAccesor(getAnnotation("good", GoodRequirementAnnotation.class));
+    annotation = getAnnotation("good", GoodRequirementAnnotation.class);
 
     // THEN the step will match
-    assertThat(accessor.step()).isEqualTo("StepOne");
+    assertThat(getStep(annotation)).isEqualTo("StepOne");
   }
 
   @Test
   public void shouldReportMissingValue() throws NoSuchMethodException, SecurityException {
     // WHEN the annotation is missing the value
     annotation = getAnnotation("missingValue", BadRequirementAnnotationMissingValue.class);
-    accessor = new AnnotationAccesor(annotation);
 
     try {
-      accessor.value();
+      getValue(annotation);
       fail("Expected InvalidRequirementAnnotationException");
     } catch (InvalidRequirementAnnotationException e) {
       String error = format("%s annotation is missing the value property.",
@@ -58,9 +61,8 @@ public class AnnotationAccesorTest {
   public void shouldReportMissingStep() throws NoSuchMethodException, SecurityException {
     // WHEN the annotation is missing the step
     annotation = getAnnotation("missingStep", BadRequirementAnnotationMissingStep.class);
-    accessor = new AnnotationAccesor(annotation);
     try {
-      accessor.step();
+      getStep(annotation);
       fail("Expected InvalidRequirementAnnotationException");
     } catch (InvalidRequirementAnnotationException e) {
       String error = format("%s annotation is missing the step property.",
@@ -72,6 +74,16 @@ public class AnnotationAccesorTest {
       // AND the cause will be remembered
       assertThat(e.getCause()).isNotNull();
     }
+  }
+
+  @Test
+  public void shouldHideConstructor() throws NoSuchMethodException, IllegalAccessException,
+      InvocationTargetException, InstantiationException {
+    final Constructor<AnnotationAccesor> constructor = AnnotationAccesor.class
+        .getDeclaredConstructor();
+    assertThat(isPrivate(constructor.getModifiers())).isTrue();
+    constructor.setAccessible(true);
+    constructor.newInstance();
   }
 
   public Annotation getAnnotation(String method, Class<? extends Annotation> annotationClass)

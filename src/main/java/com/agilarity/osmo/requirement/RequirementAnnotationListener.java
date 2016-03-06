@@ -22,15 +22,19 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.requirement;
+package com.agilarity.osmo.requirement; // NOPMD - Static imports are OK
 
+import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getStep;
+import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getValue;
+import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
+import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
@@ -63,6 +67,7 @@ public class RequirementAnnotationListener extends AbstractListener {
   private transient Collection<AnnotatedRequirement> annotatedRequirements;
   private transient TestCase failingTestCase;
   private transient Throwable error;
+  private transient Class<? extends Annotation> requirementAnnotationClass = Requirement.class;
 
   /**
    * Use the @{code RequirementNamingStrategy} by default.
@@ -115,6 +120,21 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   /**
+   * @return the requirementAnnotationClass.
+   */
+  public Class<? extends Annotation> getRequirementAnnotationClass() {
+    return requirementAnnotationClass;
+  }
+
+  /**
+   * @param requirementAnnotationClass the annotationClass to set.
+   */
+  public void setRequirementAnnotationClass(
+      final Class<? extends Annotation> requirementAnnotationClass) {
+    this.requirementAnnotationClass = requirementAnnotationClass;
+  }
+
+  /**
    * Register the requirements for a step.
    */
   @Override
@@ -147,10 +167,10 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   private boolean isRequirementForStep(final String step, final Method method) {
-    if (method.getAnnotation(Requirement.class) != null) {
+    final Annotation annotation = method.getAnnotation(requirementAnnotationClass);
+    if (annotation != null) {
       danglingMethods.push(method);
-      if (method.getAnnotation(Requirement.class).step().equalsIgnoreCase(step)
-          || method.getName().endsWith(step)) {
+      if (getStep(annotation).equalsIgnoreCase(step) || method.getName().endsWith(step)) {
         danglingMethods.pop();
         return true;
       }
@@ -160,9 +180,9 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   private AnnotatedRequirement createAnnotatedRequirement(final String step, final Method method) {
+    final Annotation annotation = method.getAnnotation(requirementAnnotationClass);
     final AnnotatedRequirement annotatedRequirement = new AnnotatedRequirement(
-        requirementNamingStrategy, method.getAnnotation(Requirement.class).value(), step,
-        method.getName());
+        requirementNamingStrategy, getValue(annotation), step, method.getName());
 
     return annotatedRequirement;
   }
@@ -174,9 +194,12 @@ public class RequirementAnnotationListener extends AbstractListener {
   public void stepDone(final TestCaseStep step) {
     final Collection<AnnotatedRequirement> annotatedRequirements = stepRequirements.get(step
         .getName());
-    if (annotatedRequirements != null) {
-      annotatedRequirements.forEach(requirement -> passRequirement(requirement));
-    }
+
+    ofNullable(annotatedRequirements).get().forEach(requirement -> passRequirement(requirement));
+
+    // if (annotatedRequirements != null) {
+    // annotatedRequirements.forEach(requirement -> passRequirement(requirement));
+    // }
   }
 
   private void passRequirement(final AnnotatedRequirement requirement) {
@@ -211,7 +234,7 @@ public class RequirementAnnotationListener extends AbstractListener {
 
     if (sourceOfError.isPresent()) {
       failingRequirement = sourceOfError.get();
-      final List<String> nameAsList = Arrays.asList(failingRequirement.getName());
+      final List<String> nameAsList = asList(failingRequirement.getName());
 
       passingRequirements.remove(failingRequirement);
 
