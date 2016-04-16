@@ -42,6 +42,7 @@ import com.agilarity.osmo.requirement.model.DoSomething;
 import com.agilarity.osmo.requirement.model.NoRequiremensOject;
 import com.agilarity.osmo.requirement.model.NoRequirementAnnotations;
 import com.agilarity.osmo.requirement.model.NoRequirementStep;
+import com.agilarity.osmo.requirement.model.StepWithRequirement;
 import com.agilarity.osmo.requirement.name.IdStepMethodNamingStrategy;
 
 import osmo.common.OSMOException;
@@ -77,6 +78,19 @@ public class RequirementsListenerTest {
 
     // THEN the there will be one requirement for each annotation
     assertThat(requirements.getRequirements()).containsAll(asList(R101, SHOULD_DO_SOMETHING_ELSE));
+  }
+
+  @Test
+  public void shouldAddAnnotatedStepRequirements() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new StepWithRequirement(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements())
+        .containsAll(asList("StepWithRequirement.stepWithRequirement"));
   }
 
   @Test
@@ -118,8 +132,8 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the requirements will be uncovered
-      assertThat(requirements.getMissingCoverage()).containsAll(
-          asList(SHOULD_COVER_AND_FAIL_STEP, SHOULD_ALSO_COVER_AND_FAIL_STEP));
+      assertThat(requirements.getMissingCoverage())
+          .containsAll(asList(SHOULD_COVER_AND_FAIL_STEP, SHOULD_ALSO_COVER_AND_FAIL_STEP));
     }
   }
 
@@ -219,8 +233,8 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the failing test case will be remembered
-      assertThat(listener.getFailingTestCase().getCurrentStep().getName()).isEqualTo(
-          "CoverAndFailStep");
+      assertThat(listener.getFailingTestCase().getCurrentStep().getName())
+          .isEqualTo("CoverAndFailStep");
     }
   }
 
