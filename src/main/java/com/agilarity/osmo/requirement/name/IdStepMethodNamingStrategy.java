@@ -9,10 +9,11 @@ import static java.lang.String.format;
 public class IdStepMethodNamingStrategy implements RequirementNamingStrategy {
 
   /**
-   * @return the id or the method.
+   * @return the requirement name.
    */
   @Override
   public String buildName(final String id, final String step, final String method) {
-    return format("%s:%s.%s", id, step, method);
+    String identifier = id.isEmpty()? id: id + ":";
+    return format("%s%s.%s", identifier, step, method);
   }
 }

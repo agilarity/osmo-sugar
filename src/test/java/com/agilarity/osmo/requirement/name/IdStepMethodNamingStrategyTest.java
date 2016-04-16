@@ -15,7 +15,12 @@ public class IdStepMethodNamingStrategyTest {
   }
 
   @Test
-  public void shouldDefaultToStepMethod() {
+  public void shouldShowIdStepMethod() {
     assertThat(uut.buildName("id", "step", "method")).isEqualTo("id:step.method");
+  }
+
+  @Test
+  public void shouldShowStepMethod() {
+    assertThat(uut.buildName("", "step", "method")).isEqualTo("step.method");
   }
 }
