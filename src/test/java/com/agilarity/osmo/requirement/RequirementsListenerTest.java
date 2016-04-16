@@ -89,8 +89,8 @@ public class RequirementsListenerTest {
     osmoTester.generate(1);
 
     // THEN the there will be one requirement for each annotation
-    assertThat(requirements.getRequirements())
-        .containsAll(asList("StepWithRequirement.stepWithRequirement"));
+    assertThat(requirements.getRequirements()).containsAll(
+        asList("StepWithRequirement.stepWithRequirement"));
   }
 
   @Test
@@ -132,8 +132,8 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the requirements will be uncovered
-      assertThat(requirements.getMissingCoverage())
-          .containsAll(asList(SHOULD_COVER_AND_FAIL_STEP, SHOULD_ALSO_COVER_AND_FAIL_STEP));
+      assertThat(requirements.getMissingCoverage()).containsAll(
+          asList(SHOULD_COVER_AND_FAIL_STEP, SHOULD_ALSO_COVER_AND_FAIL_STEP));
     }
   }
 
@@ -233,8 +233,8 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the failing test case will be remembered
-      assertThat(listener.getFailingTestCase().getCurrentStep().getName())
-          .isEqualTo("CoverAndFailStep");
+      assertThat(listener.getFailingTestCase().getCurrentStep().getName()).isEqualTo(
+          "CoverAndFailStep");
     }
   }
 

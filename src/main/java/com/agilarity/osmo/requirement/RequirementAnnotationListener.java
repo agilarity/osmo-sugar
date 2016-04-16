@@ -28,7 +28,6 @@ import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getStep;
 import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getValue;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
-import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.annotation.Annotation;
@@ -39,8 +38,6 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import com.agilarity.osmo.requirement.errors.MissingRequirementStepException;
 import com.agilarity.osmo.requirement.errors.MissingRequirementsObjectException;
@@ -48,6 +45,7 @@ import com.agilarity.osmo.requirement.name.RequirementNamingStrategy;
 import com.agilarity.osmo.requirement.name.SimpleRequirementNamingStrategy;
 
 import osmo.tester.OSMOConfiguration;
+import osmo.tester.annotation.TestStep;
 import osmo.tester.generator.listener.AbstractListener;
 import osmo.tester.generator.testsuite.TestCase;
 import osmo.tester.generator.testsuite.TestCaseStep;
@@ -60,7 +58,6 @@ import osmo.tester.model.Requirements;
 public class RequirementAnnotationListener extends AbstractListener {
   private final transient RequirementNamingStrategy requirementNamingStrategy;
   private transient Requirements requirements;
-  private transient ConcurrentMap<String, Collection<AnnotatedRequirement>> stepRequirements;
   private transient Deque<Method> danglingMethods;
   private transient AnnotatedRequirement failingRequirement;
   private transient Collection<AnnotatedRequirement> passingRequirements;
@@ -144,8 +141,8 @@ public class RequirementAnnotationListener extends AbstractListener {
       throw new MissingRequirementsObjectException();
     }
 
+    annotatedRequirements = new ArrayList<AnnotatedRequirement>();
     passingRequirements = new ArrayList<AnnotatedRequirement>();
-    stepRequirements = new ConcurrentHashMap<String, Collection<AnnotatedRequirement>>();
     danglingMethods = new ArrayDeque<Method>();
 
     fsm.getTransitions().forEach(
@@ -155,20 +152,26 @@ public class RequirementAnnotationListener extends AbstractListener {
     if (!danglingMethods.isEmpty()) {
       throw new MissingRequirementStepException(danglingMethods.peek());
     }
+
+    annotatedRequirements.forEach(requirement -> requirements.add(requirement.getName()));
   }
 
   private void addStepAnnotatedRequirements(final String step, final Object modelObject) {
-    annotatedRequirements = stream(modelObject.getClass().getMethods())
+    final Collection<AnnotatedRequirement> found = stream(modelObject.getClass().getMethods())
         .filter(method -> isRequirementForStep(step, method))
         .map(method -> createAnnotatedRequirement(step, method)).collect(toList());
 
-    annotatedRequirements.forEach(requirement -> requirements.add(requirement.getName()));
-    stepRequirements.put(step, annotatedRequirements);
+    annotatedRequirements.addAll(found);
   }
 
   private boolean isRequirementForStep(final String step, final Method method) {
     final Annotation annotation = method.getAnnotation(requirementAnnotationClass);
     if (annotation != null) {
+      if (method.getAnnotation(TestStep.class) != null) {
+        // The requirement is on a test step method.
+        return true;
+      }
+
       danglingMethods.push(method);
       if (getStep(annotation).equalsIgnoreCase(step) || method.getName().endsWith(step)) {
         danglingMethods.pop();
@@ -192,14 +195,9 @@ public class RequirementAnnotationListener extends AbstractListener {
    */
   @Override
   public void stepDone(final TestCaseStep step) {
-    final Collection<AnnotatedRequirement> annotatedRequirements = stepRequirements.get(step
-        .getName());
+    getAnnotatedRequirementsForStep(step.getName()).forEach(
+        requirement -> passRequirement(requirement));
 
-    ofNullable(annotatedRequirements).get().forEach(requirement -> passRequirement(requirement));
-
-    // if (annotatedRequirements != null) {
-    // annotatedRequirements.forEach(requirement -> passRequirement(requirement));
-    // }
   }
 
   private void passRequirement(final AnnotatedRequirement requirement) {
@@ -222,15 +220,15 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   private void uncoverAllStepRequirements(final String step) {
-    final List<String> list = stepRequirements.get(step).stream()
+    final List<String> list = getAnnotatedRequirementsForStep(step).stream()
         .map(requirement -> requirement.getName()).collect(toList());
     requirements.getFullCoverage().removeAll(list);
   }
 
   private boolean uncoverFailingRequirement(final String step, final Throwable error) {
     final String method = getThrowingMethod(error);
-    final Optional<AnnotatedRequirement> sourceOfError = stepRequirements.get(step).stream()
-        .filter(requirement -> requirement.getMethod().equals(method)).findFirst();
+    final Optional<AnnotatedRequirement> sourceOfError = getAnnotatedRequirementsForStep(step)
+        .stream().filter(requirement -> requirement.getMethod().equals(method)).findFirst();
 
     if (sourceOfError.isPresent()) {
       failingRequirement = sourceOfError.get();
@@ -250,5 +248,10 @@ public class RequirementAnnotationListener extends AbstractListener {
   private String getThrowingMethod(final Throwable error) {
     final StackTraceElement throwingMethod = error.getStackTrace()[0];
     return throwingMethod.getMethodName();
+  }
+
+  private List<AnnotatedRequirement> getAnnotatedRequirementsForStep(final String step) {
+    return annotatedRequirements.stream()
+        .filter(requirement -> requirement.getStep().equalsIgnoreCase(step)).collect(toList());
   }
 }
