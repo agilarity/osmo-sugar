@@ -55,19 +55,26 @@ public class TestStepAnnotationStepLocator implements StepLocator {
   public List<String> getSteps() {
     final Optional<TestStep> testStepAnnotation = ofNullable(method.getAnnotation(TestStep.class));
     if (testStepAnnotation.isPresent()) {
-      final String stepName = testStepAnnotation.get().name();
-      if (stepName.isEmpty()) {
-        final String stepValue = testStepAnnotation.get().value();
-        if (stepValue.isEmpty()) {
-          return emptyList();
-        } else {
-          return asList(stepValue);
-        }
-      } else {
-        return asList(stepName);
-      }
+      return getStepsFromAnnotation(testStepAnnotation.get());
     } else {
       return emptyList();
+    }
+  }
+
+  private List<String> getStepsFromAnnotation(final TestStep annotation) {
+    final String stepName = getAnnotationStep(annotation);
+    if (stepName.isEmpty()) {
+      return emptyList();
+    } else {
+      return asList(stepName);
+    }
+  }
+
+  private String getAnnotationStep(final TestStep annotation) {
+    if (annotation.name().isEmpty()) {
+      return annotation.value();
+    } else {
+      return annotation.name();
     }
   }
 }
