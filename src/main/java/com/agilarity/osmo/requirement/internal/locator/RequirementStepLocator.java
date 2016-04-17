@@ -60,16 +60,17 @@ public class RequirementStepLocator implements StepLocator {
   @Override
   public List<String> getSteps() { // NOPMD - Data flow is fine
     for (final StepLocator locator : locators) {
-      if (hasSteps(locator)) {
-        return locator.getSteps();
+      final List<String> requirementSteps = locator.getSteps();
+      if (hasSteps(requirementSteps)) {
+        return requirementSteps;
       }
     }
 
     throw new MissingRequirementStepException(method);
   }
 
-  private boolean hasSteps(final StepLocator locator) {
-    return !locator.getSteps().isEmpty();
+  private boolean hasSteps(final List<String> requirementSteps) {
+    return !requirementSteps.isEmpty();
   }
 
   private void addLocators() {
