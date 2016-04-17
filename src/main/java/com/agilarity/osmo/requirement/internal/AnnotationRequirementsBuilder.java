@@ -26,12 +26,12 @@ package com.agilarity.osmo.requirement.internal;
 
 import static com.agilarity.osmo.requirement.internal.AnnotationAccesor.getValue;
 import static java.lang.Character.toUpperCase;
-import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -40,6 +40,8 @@ import com.agilarity.osmo.requirement.internal.locator.RequirementStepLocator;
 import com.agilarity.osmo.requirement.name.RequirementNamingStrategy;
 
 import osmo.tester.model.FSM;
+import osmo.tester.model.ModelFactory;
+import osmo.tester.model.TestModels;
 
 /**
  * Build the list of annotated requirements.
@@ -52,14 +54,14 @@ public class AnnotationRequirementsBuilder {
   /**
    * Create builder.
    */
-  public AnnotationRequirementsBuilder(final FSM fsm,
+  public AnnotationRequirementsBuilder(final FSM fsm, final ModelFactory modelFactory,
       final RequirementNamingStrategy requirementNamingStrategy,
       final Class<? extends Annotation> requirementAnnotationClass) {
     super();
     this.requirementNamingStrategy = requirementNamingStrategy;
     this.requirementAnnotationClass = requirementAnnotationClass;
     annotatedRequirements = new ArrayList<AnnotatedRequirement>();
-    buildAnnotatedRequirements(fsm);
+    buildAnnotatedRequirements(fsm, modelFactory);
   }
 
   /**
@@ -69,8 +71,8 @@ public class AnnotationRequirementsBuilder {
     return annotatedRequirements;
   }
 
-  private void buildAnnotatedRequirements(final FSM fsm) {
-    final List<Method> requirementMethods = fetchRequirementMethods(fsm);
+  private void buildAnnotatedRequirements(final FSM fsm, final ModelFactory modelFactory) {
+    final List<Method> requirementMethods = fetchRequirementMethods(modelFactory);
     requirementMethods.forEach(method -> makeAnnotatedRequirements(fetchSteps(fsm), method));
   }
 
@@ -90,13 +92,13 @@ public class AnnotationRequirementsBuilder {
         .add(new AnnotatedRequirement(requirementNamingStrategy, id, step, method));
   }
 
-  private List<Method> fetchRequirementMethods(final FSM fsm) {
-    return fsm
-        .getTransitions()
-        .stream()
-        .flatMap(
-            fsmTransition -> stream(fsmTransition.getTransition().getModelObject().getClass()
-                .getMethods()))
+  private List<Method> fetchRequirementMethods(final ModelFactory modelFactory) {
+
+    final TestModels testModels = new TestModels();
+    modelFactory.createModelObjects(testModels);
+
+    return testModels.getModels().stream()
+        .flatMap(modelObject -> Arrays.stream(modelObject.getObject().getClass().getMethods()))
         .filter(method -> method.getAnnotation(requirementAnnotationClass) != null)
         .collect(toList());
   }

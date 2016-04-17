@@ -60,7 +60,8 @@ public class VendingMachineOsmoTest {
     final OSMOConfiguration config = new OSMOConfiguration();
     config.setFactory(createFactory());
     config.addListener(new TracePrinter());
-    config.addListener(new RequirementAnnotationListener(new IdStepMethodNamingStrategy()));
+    config.addListener(new RequirementAnnotationListener(config.getFactory(),
+        new IdStepMethodNamingStrategy()));
     config.setTestEndCondition(new Length(25));
     config.setSuiteEndCondition(new Length(10));
     return config;

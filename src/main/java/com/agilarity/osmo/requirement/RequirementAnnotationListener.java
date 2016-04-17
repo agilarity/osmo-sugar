@@ -43,12 +43,14 @@ import osmo.tester.generator.listener.AbstractListener;
 import osmo.tester.generator.testsuite.TestCase;
 import osmo.tester.generator.testsuite.TestCaseStep;
 import osmo.tester.model.FSM;
+import osmo.tester.model.ModelFactory;
 import osmo.tester.model.Requirements;
 
 /**
  * Add requirements from the test model and cover them on success.
  */
 public class RequirementAnnotationListener extends AbstractListener {
+  private final transient ModelFactory modelFactory;
   private final transient RequirementNamingStrategy requirementNamingStrategy;
   private transient Requirements requirements;
   private transient AnnotatedRequirement failingRequirement;
@@ -61,15 +63,17 @@ public class RequirementAnnotationListener extends AbstractListener {
   /**
    * Use the @{code RequirementNamingStrategy} by default.
    */
-  public RequirementAnnotationListener() {
-    this(new SimpleRequirementNamingStrategy());
+  public RequirementAnnotationListener(final ModelFactory modelFactory) {
+    this(modelFactory, new SimpleRequirementNamingStrategy());
   }
 
   /**
    * Inject the {@code RequirementNamingStrategy}.
    */
-  public RequirementAnnotationListener(final RequirementNamingStrategy requirementNamingStrategy) {
+  public RequirementAnnotationListener(final ModelFactory modelFactory,
+      final RequirementNamingStrategy requirementNamingStrategy) {
     super();
+    this.modelFactory = modelFactory;
     this.requirementNamingStrategy = requirementNamingStrategy;
   }
 
@@ -136,7 +140,7 @@ public class RequirementAnnotationListener extends AbstractListener {
     passingRequirements = new ArrayList<AnnotatedRequirement>();
 
     final AnnotationRequirementsBuilder builder = new AnnotationRequirementsBuilder(fsm,
-        requirementNamingStrategy, requirementAnnotationClass);
+        modelFactory, requirementNamingStrategy, requirementAnnotationClass);
     annotatedRequirements = builder.getAnnotatedRequirements();
     annotatedRequirements.forEach(requirement -> requirements.add(requirement.getName()));
   }

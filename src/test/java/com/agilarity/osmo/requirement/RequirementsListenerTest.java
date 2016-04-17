@@ -45,6 +45,7 @@ import com.agilarity.osmo.requirement.model.NoRequirementAnnotations;
 import com.agilarity.osmo.requirement.model.NoRequirementStep;
 import com.agilarity.osmo.requirement.model.StepWithRequirement;
 import com.agilarity.osmo.requirement.model.ValuedStepWithRequirement;
+import com.agilarity.osmo.requirement.model.VerifySomething;
 import com.agilarity.osmo.requirement.name.IdStepMethodNamingStrategy;
 
 import osmo.common.OSMOException;
@@ -66,7 +67,8 @@ public class RequirementsListenerTest {
   public void before() throws NoSuchMethodException, SecurityException {
     requirements = new Requirements();
     osmoTester = new OSMOTester();
-    listener = new RequirementAnnotationListener(new IdStepMethodNamingStrategy());
+    listener = new RequirementAnnotationListener(osmoTester.getConfig().getFactory(),
+        new IdStepMethodNamingStrategy());
     osmoTester.addListener(listener);
   }
 
@@ -80,6 +82,22 @@ public class RequirementsListenerTest {
 
     // THEN the there will be one requirement for each annotation
     assertThat(requirements.getRequirements()).containsAll(asList(R101, SHOULD_DO_SOMETHING_ELSE));
+  }
+
+  @Test
+  public void shouldVerifySomething() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new DoSomething(requirements));
+
+    // AND a verification only model for DoSomething
+    osmoTester.addModelObject(new VerifySomething(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList(R101, SHOULD_DO_SOMETHING_ELSE, "DoSomething.shouldVerifySomething"));
   }
 
   @Test

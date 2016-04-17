@@ -13,7 +13,7 @@ public class ConfigureRequirementAnnotationTest {
 
   @BeforeMethod
   public void before() {
-    listener = new RequirementAnnotationListener();
+    listener = new RequirementAnnotationListener(null);
   }
 
   @Test
