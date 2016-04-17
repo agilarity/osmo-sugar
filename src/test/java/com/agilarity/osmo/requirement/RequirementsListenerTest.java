@@ -44,6 +44,7 @@ import com.agilarity.osmo.requirement.model.NoRequiremensOject;
 import com.agilarity.osmo.requirement.model.NoRequirementAnnotations;
 import com.agilarity.osmo.requirement.model.NoRequirementStep;
 import com.agilarity.osmo.requirement.model.StepWithRequirement;
+import com.agilarity.osmo.requirement.model.ValuedStepWithRequirement;
 import com.agilarity.osmo.requirement.name.IdStepMethodNamingStrategy;
 
 import osmo.common.OSMOException;
@@ -98,6 +99,19 @@ public class RequirementsListenerTest {
   public void shouldAddNamedStepWithRequirement() {
     // GIVEN a model with annotated requirements
     osmoTester.addModelObject(new NamedStepWithRequirement(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList("MyStepWithRequirement.stepWithRequirement"));
+  }
+
+  @Test
+  public void shouldAddValuedStepWithRequirement() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new ValuedStepWithRequirement(requirements));
 
     // WHEN the tests are generated
     osmoTester.generate(1);

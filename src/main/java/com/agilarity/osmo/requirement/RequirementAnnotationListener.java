@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.agilarity.osmo.requirement; // NOPMD - Static imports are OK
+package com.agilarity.osmo.requirement;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
