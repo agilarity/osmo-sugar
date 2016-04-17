@@ -146,8 +146,8 @@ public class RequirementAnnotationListener extends AbstractListener {
    */
   @Override
   public void stepDone(final TestCaseStep step) {
-    getAnnotatedRequirementsForStep(step.getName())
-        .forEach(requirement -> passRequirement(requirement));
+    getAnnotatedRequirementsForStep(step.getName()).forEach(
+        requirement -> passRequirement(requirement));
 
   }
 
@@ -202,7 +202,7 @@ public class RequirementAnnotationListener extends AbstractListener {
   }
 
   private List<AnnotatedRequirement> getAnnotatedRequirementsForStep(final String step) {
-    return annotatedRequirements.stream()
-        .filter(requirement -> requirement.getStep().equalsIgnoreCase(step)).collect(toList());
+    return annotatedRequirements.stream().filter(requirement -> requirement.getStep().equals(step))
+        .collect(toList());
   }
 }

@@ -39,6 +39,7 @@ import com.agilarity.osmo.requirement.errors.MissingRequirementsObjectException;
 import com.agilarity.osmo.requirement.model.CoverAndFailStep;
 import com.agilarity.osmo.requirement.model.CoverAndFailTest;
 import com.agilarity.osmo.requirement.model.DoSomething;
+import com.agilarity.osmo.requirement.model.NamedStepWithRequirement;
 import com.agilarity.osmo.requirement.model.NoRequiremensOject;
 import com.agilarity.osmo.requirement.model.NoRequirementAnnotations;
 import com.agilarity.osmo.requirement.model.NoRequirementStep;
@@ -81,7 +82,7 @@ public class RequirementsListenerTest {
   }
 
   @Test
-  public void shouldAddAnnotatedStepRequirements() {
+  public void shouldAddStepWithRequirement() {
     // GIVEN a model with annotated requirements
     osmoTester.addModelObject(new StepWithRequirement(requirements));
 
@@ -91,6 +92,19 @@ public class RequirementsListenerTest {
     // THEN the there will be one requirement for each annotation
     assertThat(requirements.getRequirements()).containsAll(
         asList("StepWithRequirement.stepWithRequirement"));
+  }
+
+  @Test
+  public void shouldAddNamedStepWithRequirement() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new NamedStepWithRequirement(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList("MyStepWithRequirement.stepWithRequirement"));
   }
 
   @Test
