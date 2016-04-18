@@ -78,5 +78,6 @@ public class RequirementStepLocator implements StepLocator {
     locators.add(new RequirementAnnotationStepLocator(method, requirementAnnotationClass));
     locators.add(new TestStepMethodStepLocator(method));
     locators.add(new RequirementMethodStepLocator(method, steps));
+    locators.add(new PostAnnotationStepLocator(method));
   }
 }

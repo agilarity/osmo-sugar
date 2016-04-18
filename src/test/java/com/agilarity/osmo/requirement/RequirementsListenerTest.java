@@ -46,6 +46,7 @@ import com.agilarity.osmo.requirement.model.NoRequirementStep;
 import com.agilarity.osmo.requirement.model.StepWithRequirement;
 import com.agilarity.osmo.requirement.model.ValuedStepWithRequirement;
 import com.agilarity.osmo.requirement.model.VerifySomething;
+import com.agilarity.osmo.requirement.model.VerifySomethingWithPost;
 import com.agilarity.osmo.requirement.name.IdStepMethodNamingStrategy;
 
 import osmo.common.OSMOException;
@@ -98,6 +99,22 @@ public class RequirementsListenerTest {
     // THEN the there will be one requirement for each annotation
     assertThat(requirements.getRequirements()).containsAll(
         asList(R101, SHOULD_DO_SOMETHING_ELSE, "DoSomething.shouldVerifySomething"));
+  }
+
+  @Test
+  public void shouldVerifySomethingElseWithPost() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new DoSomething(requirements));
+
+    // AND a verification only model for DoSomething
+    osmoTester.addModelObject(new VerifySomethingWithPost(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList(R101, SHOULD_DO_SOMETHING_ELSE, "DoSomething.shouldVerifySomethingWithPost"));
   }
 
   @Test
