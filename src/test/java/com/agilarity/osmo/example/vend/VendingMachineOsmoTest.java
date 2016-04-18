@@ -27,15 +27,16 @@ package com.agilarity.osmo.example.vend;
 import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.Test;
 
+import com.agilarity.osmo.example.vend.uut.AcmeVendingMachine;
+import com.agilarity.osmo.example.vend.uut.VendingMachine;
+import com.agilarity.osmo.requirement.RequirementAnnotationListener;
+import com.agilarity.osmo.requirement.name.IdStepMethodNamingStrategy;
+import com.agilarity.osmo.tester.RequirementEnforcingOsmoTester;
+
 import osmo.tester.OSMOConfiguration;
 import osmo.tester.generator.endcondition.Length;
 import osmo.tester.generator.listener.TracePrinter;
 import osmo.tester.model.Requirements;
-
-import com.agilarity.osmo.example.vend.uut.AcmeVendingMachine;
-import com.agilarity.osmo.example.vend.uut.VendingMachine;
-import com.agilarity.osmo.requirement.RequirementAnnotationListener;
-import com.agilarity.osmo.tester.RequirementEnforcingOsmoTester;
 
 public class VendingMachineOsmoTest {
   private Requirements requirements;
@@ -59,7 +60,8 @@ public class VendingMachineOsmoTest {
     final OSMOConfiguration config = new OSMOConfiguration();
     config.setFactory(createFactory());
     config.addListener(new TracePrinter());
-    config.addListener(new RequirementAnnotationListener());
+    config.addListener(new RequirementAnnotationListener(config.getFactory(),
+        new IdStepMethodNamingStrategy()));
     config.setTestEndCondition(new Length(25));
     config.setSuiteEndCondition(new Length(10));
     return config;

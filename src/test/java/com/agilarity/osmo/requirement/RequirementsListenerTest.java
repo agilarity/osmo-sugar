@@ -39,15 +39,28 @@ import com.agilarity.osmo.requirement.errors.MissingRequirementsObjectException;
 import com.agilarity.osmo.requirement.model.CoverAndFailStep;
 import com.agilarity.osmo.requirement.model.CoverAndFailTest;
 import com.agilarity.osmo.requirement.model.DoSomething;
+import com.agilarity.osmo.requirement.model.NamedStepWithRequirement;
 import com.agilarity.osmo.requirement.model.NoRequiremensOject;
 import com.agilarity.osmo.requirement.model.NoRequirementAnnotations;
 import com.agilarity.osmo.requirement.model.NoRequirementStep;
+import com.agilarity.osmo.requirement.model.StepWithRequirement;
+import com.agilarity.osmo.requirement.model.ValuedStepWithRequirement;
+import com.agilarity.osmo.requirement.model.VerifySomething;
+import com.agilarity.osmo.requirement.model.VerifySomethingWithPost;
+import com.agilarity.osmo.requirement.model.VerifySomethingWithPre;
+import com.agilarity.osmo.requirement.name.IdStepMethodNamingStrategy;
 
 import osmo.common.OSMOException;
 import osmo.tester.OSMOTester;
 import osmo.tester.model.Requirements;
 
 public class RequirementsListenerTest {
+  private static final String SHOULD_STILL_COVER_TEST_REQUIREMENT = "CoverAndFailTest.shouldStillCoverTestRequirement";
+  private static final String SHOULD_COVER_AND_FAIL_TEST = "CoverAndFailTest.shouldCoverAndFailTest";
+  private static final String SHOULD_ALSO_COVER_AND_FAIL_STEP = "CoverAndFailStep.shouldAlsoCoverAndFailStep";
+  private static final String SHOULD_COVER_AND_FAIL_STEP = "CoverAndFailStep.shouldCoverAndFailStep";
+  private static final String SHOULD_DO_SOMETHING_ELSE = "DoSomething.shouldDoSomethingElse";
+  private static final String R101 = "R101:DoSomething.shouldDoSomething";
   private RequirementAnnotationListener listener;
   private Requirements requirements;
   private OSMOTester osmoTester;
@@ -56,7 +69,8 @@ public class RequirementsListenerTest {
   public void before() throws NoSuchMethodException, SecurityException {
     requirements = new Requirements();
     osmoTester = new OSMOTester();
-    listener = new RequirementAnnotationListener();
+    listener = new RequirementAnnotationListener(osmoTester.getConfig().getFactory(),
+        new IdStepMethodNamingStrategy());
     osmoTester.addListener(listener);
   }
 
@@ -69,7 +83,94 @@ public class RequirementsListenerTest {
     osmoTester.generate(1);
 
     // THEN the there will be one requirement for each annotation
-    assertThat(requirements.getRequirements()).containsAll(asList("R101", "shouldDoSomethingElse"));
+    assertThat(requirements.getRequirements()).containsAll(asList(R101, SHOULD_DO_SOMETHING_ELSE));
+  }
+
+  @Test
+  public void shouldVerifySomething() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new DoSomething(requirements));
+
+    // AND a verification only model for DoSomething
+    osmoTester.addModelObject(new VerifySomething(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList(R101, SHOULD_DO_SOMETHING_ELSE, "DoSomething.shouldVerifySomething"));
+  }
+
+  @Test
+  public void shouldVerifySomethingElseWithPost() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new DoSomething(requirements));
+
+    // AND a verification only model for DoSomething
+    osmoTester.addModelObject(new VerifySomethingWithPost(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList(R101, SHOULD_DO_SOMETHING_ELSE, "DoSomething.shouldVerifySomethingWithPost"));
+  }
+
+  @Test
+  public void shouldVerifySomethingElseWithPre() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new DoSomething(requirements));
+
+    // AND a verification only model for DoSomething
+    osmoTester.addModelObject(new VerifySomethingWithPre(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList(R101, SHOULD_DO_SOMETHING_ELSE, "DoSomething.shouldVerifySomethingWithPre"));
+  }
+
+  @Test
+  public void shouldAddStepWithRequirement() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new StepWithRequirement(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList("StepWithRequirement.stepWithRequirement"));
+  }
+
+  @Test
+  public void shouldAddNamedStepWithRequirement() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new NamedStepWithRequirement(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList("MyStepWithRequirement.stepWithRequirement"));
+  }
+
+  @Test
+  public void shouldAddValuedStepWithRequirement() {
+    // GIVEN a model with annotated requirements
+    osmoTester.addModelObject(new ValuedStepWithRequirement(requirements));
+
+    // WHEN the tests are generated
+    osmoTester.generate(1);
+
+    // THEN the there will be one requirement for each annotation
+    assertThat(requirements.getRequirements()).containsAll(
+        asList("MyStepWithRequirement.stepWithRequirement"));
   }
 
   @Test
@@ -81,9 +182,9 @@ public class RequirementsListenerTest {
     osmoTester.generate(1);
 
     // THEN the there will be one annotated requirement for each annotation
-    List<String> names = listener.getAnnotatedRequirements().stream()
+    final List<String> names = listener.getAnnotatedRequirements().stream()
         .map(AnnotatedRequirement::getName).collect(Collectors.toList());
-    assertThat(names).contains("R101", "shouldDoSomethingElse");
+    assertThat(names).contains(R101, SHOULD_DO_SOMETHING_ELSE);
   }
 
   @Test
@@ -112,7 +213,7 @@ public class RequirementsListenerTest {
     } catch (final OSMOException e) {
       // THEN the requirements will be uncovered
       assertThat(requirements.getMissingCoverage()).containsAll(
-          asList("shouldCoverAndFailStep", "shouldAlsoCoverAndFailStep"));
+          asList(SHOULD_COVER_AND_FAIL_STEP, SHOULD_ALSO_COVER_AND_FAIL_STEP));
     }
   }
 
@@ -129,11 +230,11 @@ public class RequirementsListenerTest {
       fail("Expected OSMOException");
     } catch (final OSMOException e) {
       // THEN the requirements will be uncovered
-      assertThat(requirements.getMissingCoverage()).contains("shouldCoverAndFailTest");
+      assertThat(requirements.getMissingCoverage()).contains(SHOULD_COVER_AND_FAIL_TEST);
     }
 
     // AND the passing requirement will still be covered
-    assertThat(requirements.getFullCoverage()).contains("shouldStillCoverTestRequirement");
+    assertThat(requirements.getFullCoverage()).contains(SHOULD_STILL_COVER_TEST_REQUIREMENT);
   }
 
   @Test
@@ -153,7 +254,7 @@ public class RequirementsListenerTest {
     }
 
     // AND the passing requirements will be remembered
-    List<String> passingMethods = listener.getPassingRequirements().stream()
+    final List<String> passingMethods = listener.getPassingRequirements().stream()
         .map(AnnotatedRequirement::getMethod).collect(Collectors.toList());
     assertThat(passingMethods).containsExactly("shouldStillCoverTestRequirement");
   }
