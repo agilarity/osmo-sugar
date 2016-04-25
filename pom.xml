@@ -266,21 +266,6 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.10</version>
-				<configuration>
-					<additionalBuildcommands>
-						<buildcommand>net.sf.eclipsecs.core.CheckstyleBuilder</buildcommand>
-					</additionalBuildcommands>
-					<additionalProjectnatures>
-						<projectnature>net.sf.eclipsecs.core.CheckstyleNature</projectnature>
-					</additionalProjectnatures>
-					<workspace>${basedir}</workspace>
-					<workspaceCodeStylesURL>file://${code.format}</workspaceCodeStylesURL>
-				</configuration>
-			</plugin>
-			<plugin>
 				<groupId>net.revelc.code</groupId>
 				<artifactId>formatter-maven-plugin</artifactId>
 				<version>0.5.2</version>
