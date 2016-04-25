@@ -40,8 +40,10 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-pmd-plugin</artifactId>
-					<version>3.5</version>
+					<version>3.6</version>
 					<configuration>
+						<sourceEncoding>${encoding}</sourceEncoding>
+						<targetJdk>${java.version}</targetJdk>
 						<verbose>true</verbose>
 						<rulesets>
 							<ruleset>${basedir}/src/test/resources/pmd.xml</ruleset>
