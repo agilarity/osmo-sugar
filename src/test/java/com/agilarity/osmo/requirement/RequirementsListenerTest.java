@@ -55,10 +55,10 @@ import osmo.tester.OSMOTester;
 import osmo.tester.model.Requirements;
 
 public class RequirementsListenerTest {
-  private static final String SHOULD_STILL_COVER_TEST_REQUIREMENT = "CoverAndFailTest.shouldStillCoverTestRequirement";
-  private static final String SHOULD_COVER_AND_FAIL_TEST = "CoverAndFailTest.shouldCoverAndFailTest";
-  private static final String SHOULD_ALSO_COVER_AND_FAIL_STEP = "CoverAndFailStep.shouldAlsoCoverAndFailStep";
-  private static final String SHOULD_COVER_AND_FAIL_STEP = "CoverAndFailStep.shouldCoverAndFailStep";
+  private static final String SHOULD_STILL_COVER_TEST_REQUIREMENT = "CoverAndFailTest.shouldStillCoverTestRequirement"; // NOCS
+  private static final String SHOULD_COVER_AND_FAIL_TEST = "CoverAndFailTest.shouldCoverAndFailTest"; // NOCS
+  private static final String SHOULD_ALSO_COVER_AND_FAIL_STEP = "CoverAndFailStep.shouldAlsoCoverAndFailStep"; // NOCS
+  private static final String SHOULD_COVER_AND_FAIL_STEP = "CoverAndFailStep.shouldCoverAndFailStep"; // NOCS
   private static final String SHOULD_DO_SOMETHING_ELSE = "DoSomething.shouldDoSomethingElse";
   private static final String R101 = "R101:DoSomething.shouldDoSomething";
   private RequirementAnnotationListener listener;
@@ -66,6 +66,7 @@ public class RequirementsListenerTest {
   private OSMOTester osmoTester;
 
   @BeforeMethod
+  /* NOCS */
   public void before() throws NoSuchMethodException, SecurityException {
     requirements = new Requirements();
     osmoTester = new OSMOTester();
