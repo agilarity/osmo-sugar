@@ -45,16 +45,14 @@ import com.agilarity.osmo.example.vend.uut.VendingMachine;
 import com.agilarity.osmo.requirement.Requirement;
 
 public class AddCoin extends VendingmachineModel {
+  private static final Logger LOG = LoggerFactory.getLogger(AddCoin.class);
+  private final ValueSet<Coin> coins = new ValueSet<Coin>(new Quarter(), new Dime(), new Nickle());
+  private Coin coin;
+  private int cashBeforeAdd;
 
   public AddCoin(final Requirements requirements, final VendingMachine vendingMachine) {
     super(requirements, vendingMachine);
   }
-
-  final static Logger LOG = LoggerFactory.getLogger(AddCoin.class);
-
-  private final ValueSet<Coin> coins = new ValueSet<Coin>(new Quarter(), new Dime(), new Nickle());
-  private Coin coin;
-  private int cashBeforeAdd;
 
   @Guard
   public boolean guardAddCoin() {

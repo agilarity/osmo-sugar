@@ -39,7 +39,7 @@ import com.agilarity.osmo.example.vend.uut.VendingMachine;
 import com.agilarity.osmo.requirement.Requirement;
 
 public class FillMachine extends VendingmachineModel {
-  final static Logger LOG = LoggerFactory.getLogger(FillMachine.class);
+  private static final Logger LOG = LoggerFactory.getLogger(FillMachine.class);
 
   public FillMachine(final Requirements requirements, final VendingMachine vendingMachine) {
     super(requirements, vendingMachine);

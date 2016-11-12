@@ -44,6 +44,7 @@ public class VendingMachineOsmoTest {
   private RequirementEnforcingOsmoTester tester;
 
   @BeforeSuite
+  // NOCS
   public void beforeSuite() {
     tester = new RequirementEnforcingOsmoTester();
     requirements = new Requirements();

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 import com.agilarity.osmo.example.vend.money.Coin;
 
 public class AcmeVendingMachine implements VendingMachine {
-  final static Logger LOG = LoggerFactory.getLogger(AcmeVendingMachine.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AcmeVendingMachine.class);
   private static final int COST = 40;
   private int items;
   private int cash;

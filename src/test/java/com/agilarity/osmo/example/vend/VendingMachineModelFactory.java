@@ -38,7 +38,7 @@ public class VendingMachineModelFactory implements ModelFactory {
   private final Requirements requirements;
   private final VendingMachine vendingMachine;
 
-  public VendingMachineModelFactory(final Requirements requirements,
+  public VendingMachineModelFactory(final Requirements requirements, // NOCS
       final VendingMachine vendingMachine) {
     super();
     this.requirements = requirements;

@@ -116,7 +116,7 @@ public class RequirementEnforcingOsmoTesterTest {
   public class RequirementsModel {
     private final Requirements requirements;
 
-    public RequirementsModel(final Requirements requirements) {
+    public RequirementsModel(final Requirements requirements) { // NOCS
       super();
       this.requirements = requirements;
       this.requirements.add("R1");
@@ -133,7 +133,7 @@ public class RequirementEnforcingOsmoTesterTest {
   public class MissingCoverageModel {
     private final Requirements requirements;
 
-    public MissingCoverageModel(final Requirements requirements) {
+    public MissingCoverageModel(final Requirements requirements) { // NOCS
       super();
       this.requirements = requirements;
       this.requirements.add("R3");

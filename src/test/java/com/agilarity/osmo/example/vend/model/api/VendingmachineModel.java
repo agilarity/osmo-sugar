@@ -34,7 +34,7 @@ public class VendingmachineModel {
   private final Requirements requirements;
   protected final VendingMachine vendingMachine;
 
-  public VendingmachineModel(final Requirements requirements, final VendingMachine vendingMachine) {
+  public VendingmachineModel(final Requirements requirements, final VendingMachine vendingMachine) { // NOCS
     super();
     this.requirements = requirements;
     this.vendingMachine = vendingMachine;
