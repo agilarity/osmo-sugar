@@ -66,7 +66,7 @@ public class RequirementsListenerTest {
   private OSMOTester osmoTester;
 
   @BeforeMethod
-  // NOCS
+  /* NOCS */
   public void before() throws NoSuchMethodException, SecurityException {
     requirements = new Requirements();
     osmoTester = new OSMOTester();
