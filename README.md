@@ -1,4 +1,3 @@
-[![Stories in Ready](https://badge.waffle.io/agilarity/osmo-sugar.png?label=ready&title=Ready)](https://waffle.io/agilarity/osmo-sugar)
 [![Build Status](https://travis-ci.org/agilarity/osmo-sugar.svg?branch=master)](https://travis-ci.org/agilarity/osmo-sugar)
 
 OSMO Sugar provides support for model based testing with Teemu Kanstrén's [OSMO Tester](https://github.com/mukatee/osmo).
