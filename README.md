@@ -3,11 +3,11 @@
 
 OSMO Sugar provides support for model based testing with Teemu Kanstrén's [OSMO Tester](https://github.com/mukatee/osmo).
 
-###Sugar
+### Sugar
 1. The <code>RequirementEnforcingOsmoTester</code> is a thin wrapper over <code>OSMOTester</code> that guarantees every requirement has been met.
 2. The <code>RequirementAnnotationListener</code> automates requirement registration and coverage. Just add <code>@Requirement</code> annotations to methods that assert requirements. The default <code>RequirementNamingStrategy</code> will prefer the value provided in the <code>@Requirement</code> annotation. Otherwise, it will use the name of the annotated method.
 
-###Getting started.
+### Getting started.
 1. Add the dependency.
 ```xml
 <dependency>
